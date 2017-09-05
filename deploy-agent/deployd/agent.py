@@ -402,9 +402,11 @@ def main():
         pinlogger.LOG_TO_STDERR = True
     else:
         log_filename = os.path.join(config.get_log_directory(), 'deploy-agent.log')
-        logging.basicConfig(filename=log_filename, level=config.get_log_level())
+        logging.basicConfig(filename=log_filename, level=config.get_log_level(),
+                            format='%(asctime)s %(name)s:%(lineno)d %(levelname)s %(message)s')
 
-    log.info("Start to run deploy-agent.")
+    log.info("minglog: Start to run deploy-agent.")
+    log.info("args.config_file: %s" % args.config_file)
     client = Client(config=config, hostname=args.hostname, hostgroup=args.hostgroup, use_facter=args.use_facter)
     if is_serverless_mode:
         log.info("Running agent with severless client")

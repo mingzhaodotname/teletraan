@@ -12,8 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
 from deployd.types.build import Build
 from deployd.types.deploy_stage import DeployStage
+
+log = logging.getLogger(__name__)
+
+
+class TargetState(object):
+
+    def __init__(self, jsonValue=None):
+        self.packages = None
+        self.baseline = None
+        self.builds = None
+
+        if jsonValue:
+            self.packages = jsonValue.get('packages')
+            self.baseline = jsonValue.get('baseline')
+            self.builds = jsonValue.get('builds')
+
+    def __str__(self):
+        return "TargetState(packages={}, baseline={}, builds={}".format(
+            self.packages, self.baseline, self.builds)
 
 
 class DeployGoal(object):
@@ -29,6 +49,7 @@ class DeployGoal(object):
         self.scriptVariables = None
         self.firstDeploy = None
         self.isDocker = None
+        self.targetState = None
 
         if jsonValue:
             self.deployId = jsonValue.get('deployId')
@@ -50,11 +71,17 @@ class DeployGoal(object):
             self.firstDeploy = jsonValue.get('firstDeploy')
             self.isDocker = jsonValue.get('isDocker')
 
+            if jsonValue.get('target_state'):
+                self.targetState = TargetState(jsonValue=jsonValue.get('target_state'))
+            else:
+                logging.info('minglog: no target_state')
+
     def __str__(self):
         return "DeployGoal(deployId={}, envId={}, envName={}, stageName={}, " \
                "deployStage={}, build={}, deployAlias={}, agentConfig={}," \
-               "scriptVariables={}, firstDeploy={}, isDocker={})".format(self.deployId, self.envId, self.envName,
+               "scriptVariables={}, firstDeploy={}, isDocker={}, targetState={})".format(self.deployId, self.envId, self.envName,
                                                             self.stageName, self.deployStage,
                                                             self.build, self.deployAlias,
                                                             self.config, self.scriptVariables,
-                                                            self.firstDeploy, self.isDocker)
+                                                            self.firstDeploy, self.isDocker,
+                                                                         self.targetState)
