@@ -18,8 +18,37 @@ package com.pinterest.deployservice.bean;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.util.Map;
+import java.util.List;
 
 public class DeployGoalBean {
+
+    public class TargetState {
+        public TargetState(String packages, String baseline, String builds) {
+            this.packages = packages;
+            this.baseline = baseline;
+            this.builds = builds;
+        }
+
+//        List<String> packages;
+        String packages;
+        String baseline;
+        String builds;
+
+//        List<String> builds;
+        public String getPackages() {
+            return packages;
+        }
+
+        public String getBaseline() {
+            return baseline;
+        }
+
+        public String getBuilds() {
+            return builds;
+        }
+
+    }
+
     private String deployId;
     private DeployType deployType;
     private String envId;
@@ -32,6 +61,7 @@ public class DeployGoalBean {
     private Map<String, String> scriptVariables;
     private Boolean firstDeploy;
     private Boolean isDocker;
+    private TargetState targetState;
 
     public String getDeployId() {
         return deployId;
@@ -124,6 +154,16 @@ public class DeployGoalBean {
     public void setIsDocker(Boolean isDocker) {
         this.isDocker = isDocker;
     }
+
+    public void setTargetState(TargetState targetState) {
+        this.targetState = targetState;
+        if (this.targetState == null) {
+            this.targetState = new TargetState(
+                    "target pacakges", "test baseline", " test builds");
+        }
+    }
+
+    public TargetState getTargetState() {return this.targetState; }
 
     @Override
     public String toString() {

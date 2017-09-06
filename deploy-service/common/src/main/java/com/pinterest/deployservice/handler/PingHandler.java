@@ -444,6 +444,12 @@ public class PingHandler {
         }
 
         if (response != null) {
+            DeployGoalBean goal = response.getDeployGoal();
+//            DeployGoalBean.TargetState targetState = new DeployGoalBean.TargetState(
+//                    "packages", "baseline", "builds");
+            goal.setTargetState(null);
+
+            LOG.info("===============================  Return response ===============================");
             LOG.info("Return response {} for host {}.", response, hostName);
             return new PingResult().withResponseBean(response)
                 .withInstallCandidates(installCandidates);

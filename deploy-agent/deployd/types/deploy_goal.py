@@ -24,7 +24,7 @@ class TargetState(object):
     def __init__(self, jsonValue=None):
         self.packages = None
         self.baseline = None
-        self.builds = None
+        self.buildIds = None
 
         if jsonValue:
             self.packages = jsonValue.get('packages')
@@ -52,6 +52,7 @@ class DeployGoal(object):
         self.targetState = None
 
         if jsonValue:
+            logging.info('================= minglog: DeployGoal jsonValue %s' % jsonValue)
             self.deployId = jsonValue.get('deployId')
             self.envId = jsonValue.get('envId')
             self.envName = jsonValue.get('envName')
@@ -71,10 +72,10 @@ class DeployGoal(object):
             self.firstDeploy = jsonValue.get('firstDeploy')
             self.isDocker = jsonValue.get('isDocker')
 
-            if jsonValue.get('target_state'):
-                self.targetState = TargetState(jsonValue=jsonValue.get('target_state'))
+            if jsonValue.get('targetState'):
+                self.targetState = TargetState(jsonValue=jsonValue.get('targetState'))
             else:
-                logging.info('minglog: no target_state')
+                logging.info('================= minglog: no targeState =================== ')
 
     def __str__(self):
         return "DeployGoal(deployId={}, envId={}, envName={}, stageName={}, " \
