@@ -48,26 +48,26 @@ logging:
 #
 db:
   # DB backend type. Allowed values are: embedded, mysql.
-  #type: mysql
+  type: mysql
 
   # Mysql instance configurations
-  #host: localhost
-  #port: 3306
-  #userName: root
-  #password:
+  host: localhost
+  port: 3306
+  userName: root
+  password: '000000'
 
   # Connection pool size string, in the format of
   # initialSize:maxActive:maxIdle:minIdle.
-  #pool: 10:50:20:5
+  pool: 10:50:20:5
 
   # Uncomment the following to use the embedded mysql.
-  type: embedded
+  #type: embedded
 
   # Optional - embedded mysql working directory. This is for embedded mysql only,
   # default is /tmp/teletraan/db.
   # Sometimes when the embedded mysql failed to start for whatever the reasons,
   # delete the working dir often resolve the issue.
-  workDir: /tmp/teletraan/db
+  #workDir: /tmp/teletraan/db
 
 #
 # OAuth based Authentication: by default is disabled.

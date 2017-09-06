@@ -30,9 +30,9 @@ public class DeployGoalBean {
         }
 
 //        List<String> packages;
-        String packages;
-        String baseline;
-        String builds;
+        private String packages;
+        private String baseline;
+        private String builds;
 
 //        List<String> builds;
         public String getPackages() {
@@ -53,15 +53,22 @@ public class DeployGoalBean {
     private DeployType deployType;
     private String envId;
     private String envName;
-    private String stageName;
-    private DeployStage deployStage;
+    private String stageName;  // environment stage name, e.g. alpha, canary.
+    private DeployStage deployStage;  // step name, e.g. RESTARTING
     private BuildBean build;
     private String deployAlias;
     private Map<String, String> agentConfigs;
     private Map<String, String> scriptVariables;
     private Boolean firstDeploy;
     private Boolean isDocker;
+
+    // minglog: new fields
     private TargetState targetState;
+
+    private List<String> deployIds;
+    private List<BuildBean> builds;  // this is needed only for the DOWNLOADING step.
+    private List<DeployStage> deployStages;
+
 
     public String getDeployId() {
         return deployId;
@@ -164,6 +171,30 @@ public class DeployGoalBean {
     }
 
     public TargetState getTargetState() {return this.targetState; }
+
+    public List<String> getDeployIds() {
+        return deployIds;
+    }
+
+    public void setDeployIds(List<String> deployIds) {
+        this.deployIds = deployIds;
+    }
+
+    public List<BuildBean> getBuilds() {
+        return builds;
+    }
+
+    public void setBuilds(List<BuildBean> builds) {
+        this.builds = builds;
+    }
+
+    public List<DeployStage> getDeployStages() {
+        return deployStages;
+    }
+
+    public void setDeployStages(List<DeployStage> deployStages) {
+        this.deployStages = deployStages;
+    }
 
     @Override
     public String toString() {

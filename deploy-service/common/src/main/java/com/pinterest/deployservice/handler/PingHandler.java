@@ -50,18 +50,13 @@ import com.google.common.cache.LoadingCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -449,7 +444,7 @@ public class PingHandler {
 //                    "packages", "baseline", "builds");
             goal.setTargetState(null);
 
-            LOG.info("===============================  Return response ===============================");
+            LOG.info("=============================== mingloig: Return response ===============================");
             LOG.info("Return response {} for host {}.", response, hostName);
             return new PingResult().withResponseBean(response)
                 .withInstallCandidates(installCandidates);
@@ -530,6 +525,19 @@ public class PingHandler {
             }
         }
 
+        // minglog: add target related fields
+        long startTime = 0;
+        long endTime = DateTime.now().getMillis();
+        List<DeployBean> deploys = deployDAO.getAcceptedDeploys(envBean.getEnv_id(), new Interval(startTime, endTime), 100);
+        List<String> deployIds = new ArrayList<>();
+        for (DeployBean deploy : deploys) {
+            deployIds.add(deploy.getDeploy_id());
+        }
+        goal.setDeployIds(deployIds);
+
+        // Fill the builds information no matter which step it is. Optimize later.
+        fillBuildsForDeployGoal(goal);
+
         // Pass step specfic agent configurations
         Map<String, String> configs = null;
         String agentConfigId = envBean.getAdv_config_id();
@@ -566,6 +574,21 @@ public class PingHandler {
                                : getFromCache(buildCache, deployBean.getBuild_id());
         goal.setBuild(buildBean);
     }
+
+    public void fillBuildsForDeployGoal(DeployGoalBean goal) throws Exception {
+        List<String> deployIds = goal.getDeployIds();
+
+        List<BuildBean> builds = new ArrayList<>();
+        for (String deployId : deployIds) {
+            DeployBean deployBean = deployCache == null ? deployDAO.getById(deployId)
+                    : getFromCache(deployCache, deployId);
+            BuildBean buildBean = buildCache == null ? buildDAO.getById(deployBean.getBuild_id())
+                    : getFromCache(buildCache, deployBean.getBuild_id());
+            builds.add(buildBean);
+        }
+        goal.setBuilds(builds);
+    }
+
 
     PingResponseBean generateDeleteResponse(GoalAnalyst.UninstallCandidate candidate) throws Exception {
         PingResponseBean response = new PingResponseBean();
