@@ -526,11 +526,12 @@ public class PingHandler {
         }
 
         // minglog: add target related fields
-        long startTime = 0;
-        long endTime = DateTime.now().getMillis();
-        List<DeployBean> deploys = deployDAO.getAcceptedDeploys(envBean.getEnv_id(), new Interval(startTime, endTime), 100);
+//        long startTime = 0;
+//        long endTime = DateTime.now().getMillis();
+//        List<DeployBean> deploys = deployDAO.getAcceptedDeploys(envBean.getEnv_id(), new Interval(startTime, endTime), 100);
+        List<DeployBean> runningDeploys = deployDAO.getRunningDeploys(envBean.getEnv_id());
         List<String> deployIds = new ArrayList<>();
-        for (DeployBean deploy : deploys) {
+        for (DeployBean deploy : runningDeploys) {
             deployIds.add(deploy.getDeploy_id());
         }
         goal.setDeployIds(deployIds);

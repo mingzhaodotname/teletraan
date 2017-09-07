@@ -60,7 +60,7 @@ public class DBDeployDAOImpl implements DeployDAO {
 
     private static final String GET_RUNNING_DEPLOYS_TEMPLATE =
             "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type IN (%s) " +
-                    "AND status IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
+                    "AND state IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
 
     private static final String GET_ACCEPTED_DEPLOYS_DELAYED_TEMPLATE =
         "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type NOT IN ('ROLLBACK', 'STOP') " +
