@@ -551,6 +551,12 @@ public class GoalAnalyst {
                      */
                     LOG.debug("GoalAnalyst case 1.1 - host {} is serving correct deploy {} for env {}, not a goal candidate.",
                         host, env.getDeploy_id(), env.getEnv_id());
+
+                    // check to see whether there is other deployIds available for this host.
+                    // get all the deployIds for the agent
+                    // get all the running deployIds for the env
+                    // change env deployIds if there are still deployIds not done yet.
+
                     return;
                 }
 

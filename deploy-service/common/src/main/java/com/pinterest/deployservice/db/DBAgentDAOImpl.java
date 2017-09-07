@@ -161,9 +161,11 @@ public class DBAgentDAOImpl implements AgentDAO {
         return new QueryRunner(dataSource).query(GET_AGENT_BY_ENV_AND_FIRST_DEPLOY_TIME, h, envId, time);
     }
 
+
     @Override
-    public AgentBean getByHostEnvIds(String hostId, String envId) throws Exception {
-        ResultSetHandler<AgentBean> h = new BeanHandler<>(AgentBean.class);
+    public List<AgentBean> getByHostEnvIds(String hostId, String envId) throws Exception {  // minglog
+//        ResultSetHandler<AgentBean> h = new BeanHandler<>(AgentBean.class);
+        ResultSetHandler<List<AgentBean>> h = new BeanListHandler<>(AgentBean.class);
         return new QueryRunner(dataSource).query(GET_BY_IDS, h, hostId, envId);
     }
 

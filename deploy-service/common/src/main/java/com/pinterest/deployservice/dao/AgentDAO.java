@@ -45,7 +45,9 @@ public interface AgentDAO {
 
     List<AgentBean> getByEnvAndFirstDeployTime(String envId, long time) throws Exception;
 
-    AgentBean getByHostEnvIds(String hostId, String envId) throws Exception;
+//    AgentBean getByHostEnvIds(String hostId, String envId) throws Exception;
+    // minglog
+    List<AgentBean> getByHostEnvIds(String hostId, String envId) throws Exception;
 
     void deleteAllById(String hostId) throws Exception;
 

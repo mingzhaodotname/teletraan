@@ -37,7 +37,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * first_deploy   TINYINT(1)          NOT NULL DEFAULT 0,
  * first_deploy_time     BIGINT              NOT NULL,
  * stage_start_date     BIGINT              NOT NULL,
- * PRIMARY KEY    (host_id, env_id)
+ * PRIMARY KEY    (host_id, env_id, deploy_id)
  * );
  */
 public class AgentBean implements Updatable {

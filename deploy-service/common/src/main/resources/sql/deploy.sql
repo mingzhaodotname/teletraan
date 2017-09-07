@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS agents (
     first_deploy   TINYINT(1)          NOT NULL DEFAULT 0,
     first_deploy_time     BIGINT,
     stage_start_date     BIGINT,
-    PRIMARY KEY    (host_id, env_id)
+    PRIMARY KEY    (host_id, env_id, deploy_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE INDEX agent_env_idx ON agents (env_id, host_name);
 CREATE INDEX agent_name_idx ON agents (host_name);
