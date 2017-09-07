@@ -269,25 +269,32 @@ public class DeployHandler {
         if (oldDeployId != null) {
             oldDeployBean = deployDAO.getById(oldDeployId);
 
-            finalState = StateMachines.FINAL_STATE_TRANSITION_MAP.get(oldDeployBean.getState());
-            DeployBean updatedDeployBean = new DeployBean();
-            updatedDeployBean.setState(finalState);
-
-            if (!StateMachines.FINAL_ACCEPTANCE_STATUSES.contains(oldDeployBean.getAcc_status())) {
-                updatedDeployBean.setAcc_status(AcceptanceStatus.TERMINATED);
-            }
-
-            updatedDeployBean.setLast_update(System.currentTimeMillis());
-            statements.add(deployDAO.genUpdateStatement(oldDeployId, updatedDeployBean));
+//            finalState = StateMachines.FINAL_STATE_TRANSITION_MAP.get(oldDeployBean.getState());
+//            DeployBean updatedDeployBean = new DeployBean();
+//            updatedDeployBean.setState(finalState);
+//
+//            if (!StateMachines.FINAL_ACCEPTANCE_STATUSES.contains(oldDeployBean.getAcc_status())) {
+//                updatedDeployBean.setAcc_status(AcceptanceStatus.TERMINATED);
+//            }
+//
+//            updatedDeployBean.setLast_update(System.currentTimeMillis());
+//            statements.add(deployDAO.genUpdateStatement(oldDeployId, updatedDeployBean));
         }
 
         LOG.debug("Create and persist deploy {} ", deployBean);
         DatabaseUtil.transactionalUpdate(dataSource, statements);
-        LOG.info("Announce new deploy {} for env {} and retire older deploy {} to state {}",
-            deployId, envBean.getEnv_id(), oldDeployId, finalState);
+        LOG.info("minglog: created new deploy {} for env {} with state {}, acc_status {}",
+                deployId, envBean.getEnv_id(), deployBean.getState(), deployBean.getAcc_status());
+        if (oldDeployBean != null) {
+            LOG.info("minglog: keep older deploy {} with state {}, acc_status {}",
+                    oldDeployBean.getDeploy_id(), oldDeployBean.getState(), oldDeployBean.getAcc_status());
+        }
 
-        jobPool.submit(new NotifyJob(envBean, deployBean, oldDeployBean,
-            commonHandler, deployBoardUrlPrefix, changeFeedUrl));
+//        LOG.info("Announce new deploy {} for env {} and retire older deploy {} to state {}",
+//            deployId, envBean.getEnv_id(), oldDeployId, finalState);
+
+//        jobPool.submit(new NotifyJob(envBean, deployBean, oldDeployBean,
+//            commonHandler, deployBoardUrlPrefix, changeFeedUrl));
 
         // Submit pre-deploy Webhook, if exists
         EnvWebHookBean webhook = dataHandler.getDataById(envBean.getWebhooks_config_id(), WebhookDataFactory.class);

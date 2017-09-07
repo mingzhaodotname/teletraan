@@ -57,6 +57,11 @@ public class DBDeployDAOImpl implements DeployDAO {
         "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type IN (%s) " +
             "AND acc_status='ACCEPTED' AND start_date>%d AND start_date<%d ORDER BY start_date DESC"
             + " LIMIT %d";
+
+    private static final String GET_RUNNING_DEPLOYS_TEMPLATE =
+            "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type IN (%s) " +
+                    "AND status IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
+
     private static final String GET_ACCEPTED_DEPLOYS_DELAYED_TEMPLATE =
         "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type NOT IN ('ROLLBACK', 'STOP') " +
             "AND acc_status='ACCEPTED' AND start_date>%d " +
@@ -171,6 +176,18 @@ public class DBDeployDAOImpl implements DeployDAO {
                 interval.getStartMillis(),
                 interval.getEndMillis(), size), h);
     }
+
+    @Override
+    public List<DeployBean> getRunningDeploys(String envId)
+            throws Exception {
+        ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
+        String
+                typesClause =
+                QueryUtils.genEnumGroupClause(StateMachines.AUTO_PROMOTABLE_DEPLOY_TYPE);
+        return new QueryRunner(dataSource).query(
+                String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause), h);
+    }
+
 
 
     @Override
