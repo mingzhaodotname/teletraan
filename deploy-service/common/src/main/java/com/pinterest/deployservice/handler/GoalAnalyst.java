@@ -18,8 +18,10 @@ package com.pinterest.deployservice.handler;
 import com.pinterest.deployservice.bean.*;
 import com.pinterest.deployservice.common.Constants;
 import com.pinterest.deployservice.common.StateMachines;
+import com.pinterest.deployservice.dao.AgentDAO;
 import com.pinterest.deployservice.dao.DeployDAO;
 import com.pinterest.deployservice.dao.EnvironDAO;
+import com.pinterest.deployservice.db.DatabaseUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class GoalAnalyst {
     private String host;
     private String host_id;
     private DeployDAO deployDAO;
+    private AgentDAO agentDAO;
+    private EnvironDAO environDAO;
 
     // input maps, all keyed by envId
     private Map<String, EnvironBean> envs;
@@ -173,6 +177,7 @@ public class GoalAnalyst {
 
     GoalAnalyst(DeployDAO deployDAO, EnvironDAO environDAO, String host, String host_id, Map<String, EnvironBean> envs, Map<String, PingReportBean> reports, Map<String, AgentBean> agents) {
         this.deployDAO = deployDAO;
+        this.environDAO = environDAO;
         this.host = host;
         this.host_id = host_id;
         this.envs = envs;
@@ -196,6 +201,10 @@ public class GoalAnalyst {
                 LOG.error("Failed to obtain environment info:", ex);
             }
         }
+    }
+
+    public void setAgentDAO(AgentDAO agentDAO) {
+        this.agentDAO = agentDAO;
     }
 
     public Map<String, AgentBean> getNeedUpdateAgents() {
@@ -419,6 +428,20 @@ public class GoalAnalyst {
         }
     }
 
+    void installNewBean(EnvironBean env, PingReportBean report, AgentBean agent) {
+        AgentBean newUpdateBean = genNewUpdateBean(env, agent);
+        boolean needWait = (report.getDeployStage() == DeployStage.SERVING_BUILD);
+        if (needWait) {
+            // A special case when even report suggests wait, for agent record disagree
+            if (agent != null && agent.getDeploy_stage() != DeployStage.SERVING_BUILD) {
+                needWait = false;
+            }
+        }
+        LOG.debug("=== minglog: newUpdateBean: {}", newUpdateBean);
+        installCandidates.add(new InstallCandidate(env, needWait, newUpdateBean, report));
+        return;
+    }
+
     /**
      * Compute suggested next step based on current env deploy, report deploy and agent status
      */
@@ -554,8 +577,44 @@ public class GoalAnalyst {
 
                     // check to see whether there is other deployIds available for this host.
                     // get all the deployIds for the agent
+                    List<AgentBean> agentBeans = agentDAO.getByHostEnvIds(host_id, envId);
+                    Set<String> agentDeployedIds = new HashSet<>();
+                    for (AgentBean bean : agentBeans) {
+                        agentDeployedIds.add(bean.getDeploy_id());
+                        LOG.debug("=== minglog: deployed Id {} for host {} with envId {}", bean.getDeploy_id(), host, envId);
+                    }
+
                     // get all the running deployIds for the env
+                    List<DeployBean> runningDeploys = deployDAO.getRunningDeploys(envId);
+
+                    // Find one running deployId that is not deployed to this agent yet.
+                    String newDepoyId = null;
+                    DeployType newDeployType = null;
+                    for (DeployBean deployBean : runningDeploys) {
+                        if (!agentDeployedIds.contains(deployBean.getDeploy_id())) {
+                            newDepoyId = deployBean.getDeploy_id();
+                            newDeployType = deployBean.getDeploy_type();
+                            // minglog: todo - break here.
+                        }
+                        LOG.debug("=== minglog: running deploy Id for envId {}", deployBean.getDeploy_id(), envId);
+                    }
+
                     // change env deployIds if there are still deployIds not done yet.
+                    if (newDepoyId != null) {
+                        // update environment
+                        EnvironBean updateEnvBean = new EnvironBean();
+                        updateEnvBean.setDeploy_id(newDepoyId);
+                        updateEnvBean.setDeploy_type(newDeployType);
+                        environDAO.update(envId, updateEnvBean);
+                        LOG.debug("=== minglog: updated env {} to deployId {}", envId, newDepoyId);
+
+                        EnvironBean newEnv = environDAO.getById(envId);
+                        installNewBean(newEnv, report, agent);
+
+                        LOG.debug("== minglog: installNewBean.");
+                    } else {
+                        LOG.debug("=== minglog: no more running deployments for host {}", host);
+                    }
 
                     return;
                 }

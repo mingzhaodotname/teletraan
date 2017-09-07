@@ -287,7 +287,7 @@ public class CommonHandler {
                 EnvWebHookBean webhooks = dataHandler.getDataById(envBean.getWebhooks_config_id(), WebhookDataFactory.class);
                 if (webhooks != null && !CollectionUtils.isEmpty(webhooks.getPostDeployHooks())) {
                     jobPool.submit(new WebhookJob(webhooks.getPostDeployHooks(), deployBean, envBean));
-                    LOG.info("Submited post deploy hook job for deploy {}.", deployId);
+                    LOG.info("Submitted post deploy hook job for deploy {}.", deployId);
                 }
 
                 if (envBean.getAccept_type() == AcceptanceType.AUTO) {
@@ -307,34 +307,34 @@ public class CommonHandler {
             return;
         }
 
-        String scheduleId = envBean.getSchedule_id(); 
-        long duration = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - deployBean.getLast_update());
-        long stuckTh = envBean.getStuck_th();
-        if (succeeded <= deployBean.getSuc_total() && duration >= stuckTh) {
-            if (oldState == DeployState.SUCCEEDING) {
-                // This is the case when deploy has been in SUCCEEDING for a while without updates
-                // And a new machine being provisioned, in this case, we set status back to RUNNING
-                LOG.info("Set deploy {} back to RUNNING most likely there are new hosts joining in.", deployId);
-                newDeployBean.setState(DeployState.RUNNING);
-                return;
-            } else {
-                if (scheduleId != null) { // don't change state if it's cooling down 
-                    ScheduleBean schedule = scheduleDAO.getById(scheduleId);  
-                    if (schedule.getState() == ScheduleState.COOLING_DOWN) {  
-                        return;
-                    }
-                }
-                newDeployBean.setState(DeployState.FAILING);
-                LOG.info("Set deploy {} as FAILING since {} seconds past without complete the deploy.", deployId, duration);
-                
-                // TODO, temp hack do NOT set lastUpdate for deploy stuck case, otherwise the
-                // next round transition will convert FAILING to RUNNING since new lastUpdate
-                // The better solution should be provide reason for previous transition
-                newDeployBean.setLast_update(deployBean.getLast_update());
-                // TODO please refactoring this StateTransition logic, it is HORRIBLE!!!
-                return;
-            }
-        }
+//        String scheduleId = envBean.getSchedule_id();
+//        long duration = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - deployBean.getLast_update());
+//        long stuckTh = envBean.getStuck_th();
+//        if (succeeded <= deployBean.getSuc_total() && duration >= stuckTh) {
+//            if (oldState == DeployState.SUCCEEDING) {
+//                // This is the case when deploy has been in SUCCEEDING for a while without updates
+//                // And a new machine being provisioned, in this case, we set status back to RUNNING
+//                LOG.info("Set deploy {} back to RUNNING most likely there are new hosts joining in.", deployId);
+//                newDeployBean.setState(DeployState.RUNNING);
+//                return;
+//            } else {
+//                if (scheduleId != null) { // don't change state if it's cooling down
+//                    ScheduleBean schedule = scheduleDAO.getById(scheduleId);
+//                    if (schedule.getState() == ScheduleState.COOLING_DOWN) {
+//                        return;
+//                    }
+//                }
+//                newDeployBean.setState(DeployState.FAILING);
+//                LOG.info("Set deploy {} as FAILING since {} seconds past without complete the deploy.", deployId, duration);
+//
+//                // TODO, temp hack do NOT set lastUpdate for deploy stuck case, otherwise the
+//                // next round transition will convert FAILING to RUNNING since new lastUpdate
+//                // The better solution should be provide reason for previous transition
+//                newDeployBean.setLast_update(deployBean.getLast_update());
+//                // TODO please refactoring this StateTransition logic, it is HORRIBLE!!!
+//                return;
+//            }
+//        }
 
         // At this point, always set to RUNNING
         if (oldState != DeployState.RUNNING) {
