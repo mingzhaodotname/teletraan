@@ -58,6 +58,8 @@ class Executor(object):
         return output[-(self.MAX_TAIL_BYTES+1):-1]
 
     def run_cmd(self, cmd, **kw):
+        log.info("minglog: run_cmd: os.getcwd(): {}".format(os.getcwd()))
+
         if not isinstance(cmd, list):
             cmd = cmd.split(' ')
         cmd_str = ' '.join(cmd)
@@ -187,6 +189,8 @@ class Executor(object):
             log.debug('Failed to kill process: {}'.format(e.message))
 
     def execute_command(self, script):
+        log.info("minglog: execute_command: os.getcwd(): {}".format(os.getcwd()))
+
         try:
             deploy_step = os.getenv('DEPLOY_STEP')
             if not os.path.exists(self._config.get_script_directory()):

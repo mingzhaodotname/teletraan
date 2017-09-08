@@ -83,6 +83,7 @@ class DeployAgent(object):
         """This is the main function of the ``DeployAgent``.
         """
         log.info('The deploy agent is starting.')
+        log.info("minglog: server_build: os.getcwd(): {}".format(os.getcwd()))
         if not self._executor:
             self._executor = Executor(callback=PingServer(self), config=self._config)
 
@@ -173,6 +174,7 @@ class DeployAgent(object):
 
 
     def process_deploy(self, response):
+        log.info("minglog: process_deploy: os.getcwd(): {}".format(os.getcwd()))
         op_code = response.opCode
         deploy_goal = response.deployGoal
         if op_code == OpCode.TERMINATE or op_code == OpCode.DELETE:
@@ -412,6 +414,8 @@ def main():
         log.info("Running agent with severless client")
         client = ServerlessClient(env_name=args.env_name, stage=args.stage, build=args.build,
                                   script_variables=args.script_variables)
+
+    log.info("minglog: main(): os.getcwd(): {}".format(os.getcwd()))
 
     agent = DeployAgent(client=client, conf=config)
     utils.listen()

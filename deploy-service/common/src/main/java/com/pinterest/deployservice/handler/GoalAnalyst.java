@@ -577,11 +577,19 @@ public class GoalAnalyst {
 
                     // check to see whether there is other deployIds available for this host.
                     // get all the deployIds for the agent
+
+                    List<AgentBean> agentBeansByHostId = agentDAO.getByHostId(host_id);
+                    LOG.debug("=== minglog: got deployIds num {} for host_id {}", agentBeansByHostId.size(), host_id);
+
+                    List<AgentBean> agentBeansByHostname = agentDAO.getByHost(host);
+                    LOG.debug("=== minglog: got deployIds num {} for hostname {}", agentBeansByHostname.size(), host);
+
                     List<AgentBean> agentBeans = agentDAO.getByHostEnvIds(host_id, envId);
+                    LOG.debug("=== minglog: got deployIds num {} for host_id {} with envId {}", agentBeans.size(), host_id, envId);
                     Set<String> agentDeployedIds = new HashSet<>();
                     for (AgentBean bean : agentBeans) {
                         agentDeployedIds.add(bean.getDeploy_id());
-                        LOG.debug("=== minglog: deployed Id {} for host {} with envId {}", bean.getDeploy_id(), host, envId);
+                        LOG.debug("=== minglog: deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
                     }
 
                     // get all the running deployIds for the env
@@ -596,7 +604,7 @@ public class GoalAnalyst {
                             newDeployType = deployBean.getDeploy_type();
                             // minglog: todo - break here.
                         }
-                        LOG.debug("=== minglog: running deploy Id for envId {}", deployBean.getDeploy_id(), envId);
+                        LOG.debug("=== minglog: running deploy Id {} for envId {}", deployBean.getDeploy_id(), envId);
                     }
 
                     // change env deployIds if there are still deployIds not done yet.
