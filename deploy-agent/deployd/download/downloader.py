@@ -27,6 +27,14 @@ import traceback
 log = logging.getLogger(__name__)
 
 
+INSTALL_PACKAGES = '''
+#!/bin/bash
+
+set -e
+
+apt install --dry-run {}
+'''
+
 class Downloader(object):
 
     def __init__(self, config, build, url, env_name):
@@ -39,6 +47,20 @@ class Downloader(object):
 
     def _get_extension(self, url):
         return self._matcher.match(url).group('ext')
+
+    def create_teletraan_content(self, package_dir):
+        teletraan_dir = os.path.join(package_dir, 'teletraan/')
+        if not os.path.exists(teletraan_dir):
+            log.info('minglog: Create directory {}.'.format(teletraan_dir))
+            os.mkdir(teletraan_dir)
+
+            packages = ['helloworld.deb']
+            restarting_file = os.path.join(teletraan_dir, 'RESTARTING')
+            with open(restarting_file, 'w') as restarting_file:
+                restarting_file.write(INSTALL_PACKAGES.format(' '.join(packages)))
+                log.info('minglog: wrote restarting_file: {}'.format(restarting_file))
+        else:
+            log.info('minglog: NOOP: teletraan directory already existed: {}'.format(teletraan_dir))
 
     def download(self):
         extension = self._get_extension(self._url.lower())
@@ -69,10 +91,16 @@ class Downloader(object):
                 log.info("unzip files to {}".format(working_dir))
                 with zipfile.ZipFile(local_full_fn) as zfile:
                     zfile.extractall(working_dir)
+            if extension == 'deb':
+                pass
             else:
+                # tar file.
                 log.info("untar files to {}".format(working_dir))
                 with tarfile.open(local_full_fn) as tfile:
                     tfile.extractall(working_dir)
+
+            # minglog -
+            self.create_teletraan_content(working_dir)
 
             # change the working directory back
             os.chdir(curr_working_dir)
