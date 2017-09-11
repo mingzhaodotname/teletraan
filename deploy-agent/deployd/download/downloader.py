@@ -17,7 +17,10 @@ from deployd.common.config import Config
 from deployd.common.status_code import Status
 from deployd.download.download_helper_factory import DownloadHelperFactory
 import os
+from os import listdir
+from os.path import isfile
 import re
+import subprocess
 import sys
 import tarfile
 import zipfile
@@ -47,16 +50,32 @@ class Downloader(object):
     def _get_extension(self, url):
         return self._matcher.match(url).group('ext')
 
+    def check_package_deps(self, package_dir):
+        pkg_dir = os.path.join(package_dir, 'packages')
+        pkg_files = [os.path.join(pkg_dir, file) for file in listdir(pkg_dir)
+                     if isfile(os.path.join(pkg_dir, file))]
+
+        dry_run_cmd = ['apt', 'install', '--dry-run']
+        dry_run_cmd.extend(pkg_files)
+        log.info('minglog: check dependencies cmd: {}'.format(dry_run_cmd))
+        output = subprocess.check_output(dry_run_cmd)
+
+        if 'The following additional packages will be installed' in output:
+            return Exception('More package dependencies is needed.')
+        else:
+            log.info('minglog: good, no need for more dependencies')
+
+
     def create_teletraan_content(self, package_dir):
         teletraan_dir = os.path.join(package_dir, 'teletraan/')
         if not os.path.exists(teletraan_dir):
             log.info('minglog: Create directory {}.'.format(teletraan_dir))
             os.mkdir(teletraan_dir)
 
-            packages = ['../helloworld.deb']
+            packages = ['../packages/helloworld.deb']
             restarting_file = os.path.join(teletraan_dir, 'RESTARTING')
-            with open(restarting_file, 'w') as restarting_file:
-                restarting_file.write(INSTALL_PACKAGES.format(' '.join(packages)))
+            with open(restarting_file, 'w') as file:
+                file.write(INSTALL_PACKAGES.format(' '.join(packages)))
                 log.info('minglog: wrote restarting_file: {}'.format(restarting_file))
         else:
             log.info('minglog: NOOP: teletraan directory already existed: {}'.format(teletraan_dir))
@@ -99,6 +118,8 @@ class Downloader(object):
                     tfile.extractall(working_dir)
 
             # minglog -
+            self.check_package_deps(working_dir)
+
             self.create_teletraan_content(working_dir)
 
             # change the working directory back
