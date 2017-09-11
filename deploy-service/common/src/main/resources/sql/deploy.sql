@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS deploys (
     suc_date      BIGINT,
     acc_status    VARCHAR(32)         NOT NULL,
     from_deploy   VARCHAR(22),
+    error_message   VARCHAR(2048),
     PRIMARY KEY   (deploy_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE INDEX deploy_env_idx ON deploys (env_id);

@@ -38,6 +38,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * total         INT                 NOT NULL DEFAULT 0,
  * acc_status    VARCHAR(32)         NOT NULL,
  * from_deploy   VARCHAR(22),
+ * error_message   VARCHAR(2048),
  * PRIMARY KEY   (deploy_id)
  * );
  */

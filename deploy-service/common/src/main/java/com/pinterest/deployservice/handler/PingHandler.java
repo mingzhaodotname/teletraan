@@ -174,6 +174,9 @@ public class PingHandler {
                     }
                 }
                 agentDAO.insertOrUpdate(bean);
+
+                // minglog: update deploys - recent errors
+
             } catch (Exception e) {
                 LOG.error("Failed to update agent {}.", bean, e);
             }
