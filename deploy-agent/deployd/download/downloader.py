@@ -27,8 +27,7 @@ import traceback
 log = logging.getLogger(__name__)
 
 
-INSTALL_PACKAGES = '''
-#!/bin/bash
+INSTALL_PACKAGES = '''#!/bin/bash
 
 set -e
 
@@ -54,7 +53,7 @@ class Downloader(object):
             log.info('minglog: Create directory {}.'.format(teletraan_dir))
             os.mkdir(teletraan_dir)
 
-            packages = ['helloworld.deb']
+            packages = ['../helloworld.deb']
             restarting_file = os.path.join(teletraan_dir, 'RESTARTING')
             with open(restarting_file, 'w') as restarting_file:
                 restarting_file.write(INSTALL_PACKAGES.format(' '.join(packages)))
