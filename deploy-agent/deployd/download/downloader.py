@@ -59,12 +59,12 @@ class Downloader(object):
         dry_run_cmd.extend(pkg_files)
         log.info('minglog: check dependencies cmd: {}'.format(dry_run_cmd))
         output = subprocess.check_output(dry_run_cmd)
+        log.info('minglog: check dependencies cmd output: {}'.format(output))
 
         if 'The following additional packages will be installed' in output:
-            return Exception('More package dependencies is needed.')
+            raise Exception('More package dependencies is needed.')
         else:
             log.info('minglog: good, no need for more dependencies')
-
 
     def create_teletraan_content(self, package_dir):
         teletraan_dir = os.path.join(package_dir, 'teletraan/')
