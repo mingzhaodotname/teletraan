@@ -93,6 +93,7 @@ def publish_local_build(build_path, build_name='deploy-sentinel', branch='master
     if 200 <= r.status_code < 300:
         print "Successfully published local deploy-sentinel build and host_info " \
               "configuration file to local /tmp directory!"
+        print "Status code = %s, response = %s" % (str(r.status_code), str(r.text))
     else:
         print "Error publishing local deploy-sentinel build. Status code = %s, response = %s" % (str(r.status_code),
                                                                                                  str(r.text))
