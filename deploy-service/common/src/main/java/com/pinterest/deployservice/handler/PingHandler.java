@@ -510,7 +510,13 @@ public class PingHandler {
         }
 
         // minglog: add packages
-        List<PackageBean> packageBeans = packageDAO.getByGroupId(deployId);
+        DeployBean deployBean = deployCache == null ? deployDAO.getById(goal.getDeployId())
+                : getFromCache(deployCache, goal.getDeployId());
+        BuildBean buildBean = buildCache == null ? buildDAO.getById(deployBean.getBuild_id())
+                : getFromCache(buildCache, deployBean.getBuild_id());
+        LOG.debug("minglog: deployId: {}", deployBean.getDeploy_id());
+        LOG.debug("minglog: buildId: {}", buildBean.getBuild_id());
+        List<PackageBean> packageBeans = packageDAO.getByGroupId(buildBean.getBuild_id());
         List<String> packages = new ArrayList<>();
         for (PackageBean packageBean : packageBeans) {
 //            String packageName = String.format(
@@ -518,6 +524,7 @@ public class PingHandler {
             packages.add(packageBean.getPackage_url());
         }
         goal.setPackages(packages);
+        LOG.debug("minglog: goal.getPackages(): {}", goal.getPackages());
 
         // minglog: add target related fields
 //        long startTime = 0;
