@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.List;
+
 /**
  * Keep the bean and table in sync
  * <p>
@@ -83,6 +85,9 @@ public class BuildBean implements Updatable {
 
     @JsonProperty("publishDate")
     private Long publish_date;
+
+    @JsonProperty("packages")
+    private List<PackageBean> packages;
 
     public String getScm_info() {
         return scm_info;
@@ -186,6 +191,14 @@ public class BuildBean implements Updatable {
 
     public void setPublish_date(Long publish_date) {
         this.publish_date = publish_date;
+    }
+
+    public void setPackages(List<PackageBean> packages) {
+        this.packages = packages;
+    }
+
+    public List<PackageBean> getPackages() {
+        return this.packages;
     }
 
     @Override

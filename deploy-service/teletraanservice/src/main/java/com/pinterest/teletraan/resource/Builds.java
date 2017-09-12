@@ -177,6 +177,12 @@ public class Builds {
     public Response publish(
             @Context SecurityContext sc,
             @ApiParam(value = "BUILD object", required = true)@Valid BuildBean buildBean) throws Exception {
+
+        LOG.info("minglog: published package {}", buildBean.getPackages());
+        if (buildBean.getPackages() != null) {
+            LOG.info("minglog: published package size: {}", buildBean.getPackages().size());
+        }
+
         if (StringUtils.isEmpty(buildBean.getScm())) {
             buildBean.setScm(sourceControlManager.getType());
         }
@@ -218,6 +224,7 @@ public class Builds {
         buildBean = buildDAO.getById(buildId);
 
         // minglog: create packages
+
         PackageBean packageBean = new PackageBean();
         String packageId = CommonUtils.getBase64UUID();
 
