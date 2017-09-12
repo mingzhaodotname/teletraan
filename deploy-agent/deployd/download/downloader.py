@@ -82,6 +82,7 @@ class Downloader(object):
             log.info('minglog: NOOP: teletraan directory already existed: {}'.format(teletraan_dir))
 
     def download_packages(self, build_dir):
+        """Download packages to path/to/build dir/packages/"""
         if self._packages is None:
             return
 
@@ -126,7 +127,7 @@ class Downloader(object):
             return Status.FAILED
 
         curr_working_dir = os.getcwd()
-        os.chdir(working_dir)
+        os.chdir(working_dir)  # working_dir is build_dir, e.g. /tmp/deployd/builds/xxxxxx/
         try:
             if extension == 'zip':
                 log.info("unzip files to {}".format(working_dir))
