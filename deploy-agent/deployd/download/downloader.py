@@ -39,13 +39,14 @@ apt install --dry-run {}
 
 class Downloader(object):
 
-    def __init__(self, config, build, url, env_name):
+    def __init__(self, config, build, url, env_name, packages=None):
         self._matcher = re.compile(r'^.*?[.](?P<ext>tar\.gz|tar\.bz2|\w+)$')
-        self._base_dir = config.get_builds_directory()
+        self._base_dir = config.get_builds_directory()  # /tmp/deployd/builds/
         self._build_name = env_name
         self._build = build
         self._url = url
         self._config = config
+        self._packages = packages
 
     def _get_extension(self, url):
         return self._matcher.match(url).group('ext')
@@ -66,8 +67,8 @@ class Downloader(object):
         else:
             log.info('minglog: good, no need for more dependencies')
 
-    def create_teletraan_content(self, package_dir):
-        teletraan_dir = os.path.join(package_dir, 'teletraan/')
+    def create_teletraan_content(self, build_dir):
+        teletraan_dir = os.path.join(build_dir, 'teletraan/')
         if not os.path.exists(teletraan_dir):
             log.info('minglog: Create directory {}.'.format(teletraan_dir))
             os.mkdir(teletraan_dir)
@@ -80,6 +81,27 @@ class Downloader(object):
         else:
             log.info('minglog: NOOP: teletraan directory already existed: {}'.format(teletraan_dir))
 
+    def download_packages(self, build_dir):
+        if self._packages is None:
+            return
+
+        pkg_dir = os.path.join(build_dir, 'packages')
+        if not os.path.exists(pkg_dir):
+            log.info('Create directory {}.'.format(pkg_dir))
+            os.mkdir(pkg_dir)
+
+        pkg_urls = self._packages.split(',')
+        for pkg_url in pkg_urls:
+            pkg_name = pkg_url.split('/')[-1]
+            local_full_fn = os.path.join(build_dir, 'packages', pkg_name)
+            downloader = DownloadHelperFactory.gen_downloader(pkg_url, self._config)
+            if downloader:
+                status = downloader.download(local_full_fn)
+                if status != Status.SUCCEEDED:
+                    raise Exception('Failed to download package: ' + pkg_url)
+            else:
+                raise Exception('Failed to download package: ' + pkg_url)
+
     def download(self):
         extension = self._get_extension(self._url.lower())
         local_fn = u'{}-{}.{}'.format(self._build_name, self._build, extension)
@@ -89,6 +111,7 @@ class Downloader(object):
             log.info("{} exists. tarball have already been extracted.".format(extracted_file))
             return Status.SUCCEEDED
 
+        # working_dir: /tmp/deployd/builds/xxxxxx/
         working_dir = os.path.join(self._base_dir, self._build)
         if not os.path.exists(working_dir):
             log.info('Create directory {}.'.format(working_dir))
@@ -118,6 +141,8 @@ class Downloader(object):
                     tfile.extractall(working_dir)
 
             # minglog -
+            self.download_packages(working_dir)
+
             self.check_package_deps(working_dir)
 
             self.create_teletraan_content(working_dir)
@@ -153,12 +178,14 @@ def main():
                              "with s3:// or https://")
     parser.add_argument('-e', '--env-name', dest='env_name', required=True,
                         help="the environment name currently in deploy.")
+    parser.add_argument('-p', '--packages', dest='packages', required=False,
+                        help="packages to deploy.")
     args = parser.parse_args()
     config = Config(args.config_file)
     logging.basicConfig(level=config.get_log_level())
 
-    log.info("Start to download the package.")
-    status = Downloader(config, args.build, args.url, args.env_name).download()
+    log.info("Start to download the build.")
+    status = Downloader(config, args.build, args.url, args.env_name, args.packages).download()
     if status != Status.SUCCEEDED:
         log.error("Download failed.")
         sys.exit(1)

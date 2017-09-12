@@ -50,6 +50,7 @@ class DeployGoal(object):
         self.firstDeploy = None
         self.isDocker = None
         self.targetState = None
+        self.packages = None
 
         if jsonValue:
             logging.info('================= minglog: DeployGoal jsonValue %s' % jsonValue)
@@ -71,6 +72,7 @@ class DeployGoal(object):
             self.scriptVariables = jsonValue.get('scriptVariables')
             self.firstDeploy = jsonValue.get('firstDeploy')
             self.isDocker = jsonValue.get('isDocker')
+            self.packages = jsonValue.get('packages')
 
             if jsonValue.get('targetState'):
                 self.targetState = TargetState(jsonValue=jsonValue.get('targetState'))

@@ -212,11 +212,12 @@ class DeployAgent(object):
         url = deploy_goal.build.artifactUrl
         build = deploy_goal.build.buildId
         env_name = self._curr_report.report.envName
+        packages = ','.join(deploy_goal.packages)
         if not self._config.get_config_filename():
-            return ['deploy-downloader', '-v', build, '-u', url, "-e", env_name]
+            return ['deploy-downloader', '-v', build, '-u', url, "-e", env_name, "-p", packages]
         else:
             return ['deploy-downloader', '-f', self._config.get_config_filename(),
-                    '-v', build, '-u', url, "-e", env_name]
+                    '-v', build, '-u', url, "-e", env_name, "-p", packages]
 
     def get_staging_script(self):
         build = self._curr_report.build_info.build_id
