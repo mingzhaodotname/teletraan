@@ -216,6 +216,23 @@ public class Builds {
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();
         URI buildUri = ub.path(buildId).build();
         buildBean = buildDAO.getById(buildId);
+
+        // minglog: create packages
+        PackageBean packageBean = new PackageBean();
+        String packageId = CommonUtils.getBase64UUID();
+
+        packageBean.setPackage_id(packageId);
+        packageBean.setPackage_name("hello-world");
+        packageBean.setPackage_version("1.0.0");
+        packageBean.setPackage_url("http://this.that");
+        packageBean.setGroup_id("group id");
+        packageBean.setBuild_id("build id");
+        packageBean.setPublish_date(System.currentTimeMillis());
+        packageBean.setPublish_info("publish info");
+        packageBean.setPublisher(sc.getUserPrincipal().getName());
+        packageDAO.insert(packageBean);
+        LOG.info("Successfully published package {}", packageBean.getPackage_name());
+
         return Response.created(buildUri).entity(buildBean).build();
     }
 
