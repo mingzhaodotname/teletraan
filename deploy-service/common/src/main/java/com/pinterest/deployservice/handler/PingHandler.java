@@ -16,33 +16,11 @@
 package com.pinterest.deployservice.handler;
 
 import com.pinterest.deployservice.ServiceContext;
-import com.pinterest.deployservice.bean.AgentBean;
-import com.pinterest.deployservice.bean.AgentErrorBean;
-import com.pinterest.deployservice.bean.AgentState;
-import com.pinterest.deployservice.bean.BuildBean;
-import com.pinterest.deployservice.bean.DeployBean;
-import com.pinterest.deployservice.bean.DeployGoalBean;
-import com.pinterest.deployservice.bean.DeployStage;
-import com.pinterest.deployservice.bean.EnvironBean;
-import com.pinterest.deployservice.bean.HostState;
-import com.pinterest.deployservice.bean.OpCode;
-import com.pinterest.deployservice.bean.PingReportBean;
-import com.pinterest.deployservice.bean.PingRequestBean;
-import com.pinterest.deployservice.bean.PingResponseBean;
-import com.pinterest.deployservice.bean.PingResult;
-import com.pinterest.deployservice.bean.ScheduleBean;
-import com.pinterest.deployservice.bean.ScheduleState;
+import com.pinterest.deployservice.bean.*;
 import com.pinterest.deployservice.common.Constants;
 import com.pinterest.deployservice.common.DeployInternalException;
 import com.pinterest.deployservice.common.StateMachines;
-import com.pinterest.deployservice.dao.AgentDAO;
-import com.pinterest.deployservice.dao.AgentErrorDAO;
-import com.pinterest.deployservice.dao.BuildDAO;
-import com.pinterest.deployservice.dao.DeployDAO;
-import com.pinterest.deployservice.dao.EnvironDAO;
-import com.pinterest.deployservice.dao.HostDAO;
-import com.pinterest.deployservice.dao.ScheduleDAO;
-import com.pinterest.deployservice.dao.UtilDAO;
+import com.pinterest.deployservice.dao.*;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -79,6 +57,7 @@ public class PingHandler {
     private AgentErrorDAO agentErrorDAO;
     private DeployDAO deployDAO;
     private BuildDAO buildDAO;
+    private PackageDAO packageDAO;
     private EnvironDAO environDAO;
     private HostDAO hostDAO;
     private UtilDAO utilDAO;
@@ -92,6 +71,7 @@ public class PingHandler {
         agentErrorDAO = serviceContext.getAgentErrorDAO();
         deployDAO = serviceContext.getDeployDAO();
         buildDAO = serviceContext.getBuildDAO();
+        packageDAO = serviceContext.getPackageDAO();
         environDAO = serviceContext.getEnvironDAO();
         hostDAO = serviceContext.getHostDAO();
         utilDAO = serviceContext.getUtilDAO();
@@ -528,6 +508,16 @@ public class PingHandler {
                 LOG.debug("Add script varibles {} to goal at {} stage", variables, updateBean.getDeploy_stage());
             }
         }
+
+        // minglog: add packages
+        List<PackageBean> packageBeans = packageDAO.getByGroupId(deployId);
+        List<String> packages = new ArrayList<>();
+        for (PackageBean packageBean : packageBeans) {
+//            String packageName = String.format(
+//                    "{}.{}", packageBean.getPackage_name() + packageBean.getPackage_version());
+            packages.add(packageBean.getPackage_url());
+        }
+        goal.setPackages(packages);
 
         // minglog: add target related fields
 //        long startTime = 0;

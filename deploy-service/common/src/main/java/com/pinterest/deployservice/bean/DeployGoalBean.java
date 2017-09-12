@@ -63,6 +63,8 @@ public class DeployGoalBean {
     private Boolean isDocker;
 
     // minglog: new fields
+    private List<String> packages;
+
     private TargetState targetState;
 
     private List<String> deployIds;
@@ -160,6 +162,14 @@ public class DeployGoalBean {
 
     public void setIsDocker(Boolean isDocker) {
         this.isDocker = isDocker;
+    }
+
+    public List<String> getPackages() {
+        return packages;
+    }
+
+    public void setPackages(List<String> packages) {
+        this.packages = packages;
     }
 
     public void setTargetState(TargetState targetState) {
