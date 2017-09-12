@@ -198,6 +198,22 @@ CREATE TABLE IF NOT EXISTS builds (
 CREATE INDEX build_name_idx ON builds (build_name, scm_branch, publish_date);
 CREATE INDEX build_commit_idx ON builds (scm_commit_7);
 
+
+CREATE TABLE IF NOT EXISTS packages (
+    package_id         VARCHAR(30)         NOT NULL,
+    package_name       VARCHAR(64)         NOT NULL,
+    package_version    VARCHAR(64)         NOT NULL,
+    package_url        VARCHAR(512)        NOT NULL,
+    build_id           VARCHAR(30)         NOT NULL,
+    group_id           VARCHAR(30)         NOT NULL,
+    publish_info       VARCHAR(512),
+    publish_date       BIGINT,
+    publisher          VARCHAR(64),
+    PRIMARY KEY    (package_id, build_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE INDEX package_name_idx ON packages (package_name, package_version);
+CREATE INDEX package_group_id_idx ON packages (package_id, package_name, group_id);
+
 CREATE TABLE IF NOT EXISTS global_envs (
     env_name      VARCHAR(64)         NOT NULL,
     pipeline      VARCHAR(16)         NOT NULL,
