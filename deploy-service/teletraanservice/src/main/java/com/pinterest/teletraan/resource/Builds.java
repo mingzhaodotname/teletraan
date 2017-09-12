@@ -215,14 +215,13 @@ public class Builds {
         LOG.info("Successfully published build {} by {}.", buildId, sc.getUserPrincipal().getName());
 
         // minglog: create packages
-        LOG.info("minglog: published package {}", buildBean.getPackages());
+        LOG.info("requested package {}", buildBean.getPackages());
         if (buildBean.getPackages() != null) {
-            LOG.info("minglog: published package size: {}", buildBean.getPackages().size());
+            LOG.info("requested package size: {}", buildBean.getPackages().size());
             for (PackageBean packageBean : buildBean.getPackages()) {
                 String packageId = CommonUtils.getBase64UUID();
                 packageBean.setPackage_id(packageId);
-//                packageBean.setPackage_name("hello-world");
-//                packageBean.setPackage_version("1.0.0");
+                // TOD: what if package name and version are not specified.
 
                 if (StringUtils.isEmpty(packageBean.getPackage_url())) {
                     packageBean.setPackage_url("UNKNOWN");
@@ -252,22 +251,6 @@ public class Builds {
                 // TODO: use transaction to write to data, ideally together with build.
             }
         }
-
-
-//        PackageBean packageBean = new PackageBean();
-//        String packageId = CommonUtils.getBase64UUID();
-//
-//        packageBean.setPackage_id(packageId);
-//        packageBean.setPackage_name("hello-world");
-//        packageBean.setPackage_version("1.0.0");
-//        packageBean.setPackage_url("http://this.that");
-//        packageBean.setGroup_id("group id");
-//        packageBean.setBuild_id("build id");
-//        packageBean.setPublish_date(System.currentTimeMillis());
-//        packageBean.setPublish_info("publish info");
-//        packageBean.setPublisher(sc.getUserPrincipal().getName());
-//        packageDAO.insert(packageBean);
-//        LOG.info("Successfully published package {}", packageBean.getPackage_name());
 
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();
         URI buildUri = ub.path(buildId).build();
