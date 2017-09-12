@@ -74,18 +74,23 @@ def publish_local_build(build_path, build_name='deploy-sentinel', branch='master
     build['publishInfo'] = build_path
 
     packages = []
-    package1 = {}
-    package1['name'] = 'package1'
-    package1['version'] = '1.0.0'
-    package1['version'] = '1.0.0'
-    package1['packageUrl'] = 'packageUrl1'
-    package2 = {}
-    package2['name'] = 'package2'
-    package2['version'] = '2.0.0'
-    package2['packageUrl'] = 'packageUrl2'
-    packages.append(package1)
-    packages.append(package2)
-    
+#    package1 = {}
+#    package1['name'] = 'package1'
+#    package1['version'] = '1.0.0'
+#    package1['packageUrl'] = 'packageUrl1'
+#    package2 = {}
+#    package2['name'] = 'package2'
+#    package2['version'] = '2.0.0'
+#    package2['packageUrl'] = 'packageUrl2'
+#    packages.append(package1)
+#    packages.append(package2)
+
+    package_hello = {}
+    package_hello['name'] = 'helloworld'
+    package_hello['version'] = '1.0.0'
+    package_hello['packageUrl'] = 'file:///tmp/packages/helloworld.deb'
+
+    packages.append(package_hello)
     build['packages'] = packages;
     print 'build:', build
 
