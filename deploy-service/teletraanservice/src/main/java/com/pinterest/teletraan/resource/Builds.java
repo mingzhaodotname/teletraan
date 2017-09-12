@@ -21,6 +21,7 @@ import com.pinterest.deployservice.buildtags.BuildTagsManager;
 import com.pinterest.deployservice.buildtags.BuildTagsManagerImpl;
 import com.pinterest.deployservice.common.CommonUtils;
 import com.pinterest.deployservice.dao.BuildDAO;
+import com.pinterest.deployservice.dao.PackageDAO;
 import com.pinterest.deployservice.dao.TagDAO;
 import com.pinterest.deployservice.scm.SourceControlManager;
 import com.pinterest.teletraan.TeletraanServiceContext;
@@ -51,6 +52,7 @@ public class Builds {
     private final static int DEFAULT_SIZE = 100;
     private BuildDAO buildDAO;
     private TagDAO tagDAO;
+    private PackageDAO packageDAO;
     private SourceControlManager sourceControlManager;
     private final Authorizer authorizer;
 
@@ -60,6 +62,7 @@ public class Builds {
     public Builds(TeletraanServiceContext context) throws Exception {
         buildDAO = context.getBuildDAO();
         tagDAO = context.getTagDAO();
+        packageDAO = context.getPackageDAO();
         sourceControlManager = context.getSourceControlManager();
         authorizer = context.getAuthorizer();
     }

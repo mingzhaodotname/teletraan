@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 public class ServiceContext {
     private BasicDataSource dataSource;
     private BuildDAO buildDAO;
+    private PackageDAO packageDAO;
     private AgentDAO agentDAO;
     private AgentErrorDAO agentErrorDAO;
     private DeployDAO deployDAO;
@@ -81,6 +82,14 @@ public class ServiceContext {
 
     public void setBuildDAO(BuildDAO buildDAO) {
         this.buildDAO = buildDAO;
+    }
+
+    public PackageDAO getPackageDAO() {
+        return packageDAO;
+    }
+
+    public void setPackageDAO(PackageDAO packageDAO) {
+        this.packageDAO = packageDAO;
     }
 
     public AgentDAO getAgentDAO() {
