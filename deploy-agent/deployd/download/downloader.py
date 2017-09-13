@@ -37,6 +37,7 @@ set -e
 apt install --dry-run {}
 '''
 
+
 class DeployException(Exception):
     def __init__(self, message):
         super(DeployException, self).__init__(message)
@@ -67,8 +68,15 @@ class Downloader(object):
         output = subprocess.check_output(dry_run_cmd)
         log.info('minglog: check dependencies cmd output: {}'.format(output))
 
-        if 'The following additional packages will be installed' in output:
-            raise DeployException('More package dependencies is needed.')
+        MORE_PACKAGES_NEEDED = 'The following additional packages will be installed'
+
+        if MORE_PACKAGES_NEEDED in output:
+            more_packages = ''
+            lines = output.splitlines()
+            for i in range(len(lines)):
+                if MORE_PACKAGES_NEEDED in lines[i] and (i+1) < len(lines):
+                    more_packages = lines[i+1].strip()
+            raise DeployException('More package dependencies needed: {}'.format(more_packages))
         else:
             log.info('minglog: good, no need for more dependencies')
 

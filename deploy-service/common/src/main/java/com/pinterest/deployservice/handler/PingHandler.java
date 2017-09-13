@@ -163,18 +163,21 @@ public class PingHandler {
 
     void updateDeployError(Map<String, String> errorMessages) {  // minglog
         LOG.debug("=== minglog: Update deploy error message");
-        String DEPLOY_EXCEPTION = "DeployException:";
+//        String DEPLOY_EXCEPTION = "DeployException:";
+        String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
         for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
             String envId = entry.getKey();
             String origErrorMessage = entry.getValue();
-            String lines[] = origErrorMessage.split("\\r?\\n");
+            LOG.debug(String.format("=== minglog: Update deploy error message for envId: {}, " +
+                    "with original error message: {}", envId, origErrorMessage));
 
             String errorMessage = null;
+            String lines[] = origErrorMessage.split("\\r?\\n");
             for (String line : lines) {
                 int index = line.indexOf(DEPLOY_EXCEPTION);
 
                 if (index >= 0) {
-                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length());
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length()).trim();
                     break;
                 }
             }
@@ -186,7 +189,8 @@ public class PingHandler {
                 updateBean.setLast_update(System.currentTimeMillis());
                 try {
                     EnvironBean environBean = environDAO.getById(envId);
-                    LOG.error("=== minglog: updating deploy {}.", environBean.getDeploy_id());
+                    LOG.error("=== minglog: updating deploy {} with error message: {}.",
+                            environBean.getDeploy_id(), errorMessage);
                     deployDAO.update(environBean.getDeploy_id(), updateBean);
                 } catch (Exception e) {
                     LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
