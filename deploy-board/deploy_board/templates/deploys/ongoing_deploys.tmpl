@@ -30,7 +30,7 @@
         <span class="deployToolTip pointer-cursor {{ deploy.state|deployStateIcon }}"
               data-toggle="tooltip" title="{{ deploy.state }}">
         </span>
-            <small>{{ deploy.state }}</small>
+            <small>{{ deploy.state }}  <br> {{ deploy.errorMessage }}</small>
         <td>
             <div class="progress deployToolTip"
                  data-toggle="tooltip" title="{{ deploy|progressTip }}">

@@ -31,9 +31,11 @@ DEFAULT_ONGOING_DEPLOY_SIZE = 10
 
 def _get_ongoing_deploys(request, index, size):
     # ongoing deploys are defined as deploys with states as:
-    deploy_states = ["RUNNING", "FAILING"]
+    deploy_states = ["RUNNING", "FAILING", 'SUCCEEDING']
     deployResult = deploys_helper.get_all(request, deployState=deploy_states,
                                           pageIndex=index, pageSize=size)
+
+    print '============ deployResult:', deployResult
     deploy_summaries = []
     for deploy in deployResult['deploys']:
         env = environs_helper.get(request, deploy['envId'])
