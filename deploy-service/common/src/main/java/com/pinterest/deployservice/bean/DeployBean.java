@@ -86,6 +86,9 @@ public class DeployBean implements Updatable {
     @JsonProperty("fromDeployId")
     private String from_deploy;
 
+    @JsonProperty("errorMessage")
+    private String error_message;
+
     public String getDeploy_id() {
         return deploy_id;
     }
@@ -214,6 +217,14 @@ public class DeployBean implements Updatable {
         this.from_deploy = from_deploy;
     }
 
+    public String getError_message() {
+        return error_message;
+    }
+
+    public void setError_message(String error_message) {
+        this.error_message= error_message;
+    }
+
     @Override
     public SetClause genSetClause() {
         SetClause clause = new SetClause();
@@ -233,6 +244,7 @@ public class DeployBean implements Updatable {
         clause.addColumn("total", total);
         clause.addColumn("acc_status", acc_status);
         clause.addColumn("from_deploy", from_deploy);
+        clause.addColumn("error_message", error_message);
         return clause;
     }
 

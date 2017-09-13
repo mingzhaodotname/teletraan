@@ -37,6 +37,11 @@ set -e
 apt install --dry-run {}
 '''
 
+class DeployException(Exception):
+    def __init__(self, message):
+        super(DeployException, self).__init__(message)
+
+
 class Downloader(object):
 
     def __init__(self, config, build, url, env_name, packages=None):
@@ -63,7 +68,7 @@ class Downloader(object):
         log.info('minglog: check dependencies cmd output: {}'.format(output))
 
         if 'The following additional packages will be installed' in output:
-            raise Exception('More package dependencies is needed.')
+            raise DeployException('More package dependencies is needed.')
         else:
             log.info('minglog: good, no need for more dependencies')
 
@@ -167,7 +172,6 @@ class Downloader(object):
 
 
 def main():
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-f', '--config-file', dest='config_file', required=False,
                         help='the deploy agent config file path.')

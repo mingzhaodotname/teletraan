@@ -155,12 +155,45 @@ public class PingHandler {
                 }
                 agentDAO.insertOrUpdate(bean);
 
-                // minglog: update deploys - recent errors
-
             } catch (Exception e) {
                 LOG.error("Failed to update agent {}.", bean, e);
             }
         }
+    }
+
+    void updateDeployError(Map<String, String> errorMessages) {  // minglog
+        LOG.debug("=== minglog: Update deploy error message");
+        String DEPLOY_EXCEPTION = "DeployException:";
+        for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
+            String envId = entry.getKey();
+            String origErrorMessage = entry.getValue();
+            String lines[] = origErrorMessage.split("\\r?\\n");
+
+            String errorMessage = null;
+            for (String line : lines) {
+                int index = line.indexOf(DEPLOY_EXCEPTION);
+
+                if (index >= 0) {
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length());
+                    break;
+                }
+            }
+
+            if (!StringUtils.isEmpty(errorMessage)) {
+                DeployBean updateBean = new DeployBean();
+//              updateBean.setState(finalState);
+                updateBean.setError_message(errorMessage);
+                updateBean.setLast_update(System.currentTimeMillis());
+                try {
+                    EnvironBean environBean = environDAO.getById(envId);
+                    LOG.error("=== minglog: updating deploy {}.", environBean.getDeploy_id());
+                    deployDAO.update(environBean.getDeploy_id(), updateBean);
+                } catch (Exception e) {
+                    LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
+                }
+            }
+        }
+
     }
 
     /**
@@ -421,6 +454,9 @@ public class PingHandler {
             LOG.debug("Update {} agent records for host {}.", updateBeans.size(), hostName);
             updateAgentsSafely(updateBeans.values(), analyst.getErrorMessages());
         }
+
+        // minglog: udpate deploy record with the error processed and simplified message
+        updateDeployError(analyst.getErrorMessages());
 
         if (response != null) {
             DeployGoalBean goal = response.getDeployGoal();
