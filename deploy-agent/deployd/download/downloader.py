@@ -34,7 +34,7 @@ INSTALL_PACKAGES = '''#!/bin/bash
 
 set -e
 
-apt install --dry-run {}
+apt install {}
 '''
 
 
@@ -57,8 +57,8 @@ class Downloader(object):
     def _get_extension(self, url):
         return self._matcher.match(url).group('ext')
 
-    def check_package_deps(self, package_dir):
-        pkg_dir = os.path.join(package_dir, 'packages')
+    def check_package_deps(self, build_dir):
+        pkg_dir = os.path.join(build_dir, 'packages')
         pkg_files = [os.path.join(pkg_dir, file) for file in listdir(pkg_dir)
                      if isfile(os.path.join(pkg_dir, file))]
 
@@ -86,10 +86,14 @@ class Downloader(object):
             log.info('minglog: Create directory {}.'.format(teletraan_dir))
             os.mkdir(teletraan_dir)
 
-            packages = ['../packages/helloworld.deb']
+            pkg_dir = os.path.join(build_dir, 'packages')
+            pkg_files = [os.path.join(pkg_dir, file) for file in listdir(pkg_dir)
+                         if isfile(os.path.join(pkg_dir, file))]
+
+            # packages = ['../packages/helloworld.deb']
             restarting_file = os.path.join(teletraan_dir, 'RESTARTING')
             with open(restarting_file, 'w') as file:
-                file.write(INSTALL_PACKAGES.format(' '.join(packages)))
+                file.write(INSTALL_PACKAGES.format(' '.join(pkg_files)))
                 log.info('minglog: wrote restarting_file: {}'.format(restarting_file))
         else:
             log.info('minglog: NOOP: teletraan directory already existed: {}'.format(teletraan_dir))
