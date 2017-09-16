@@ -34,7 +34,7 @@ INSTALL_PACKAGES = '''#!/bin/bash
 
 set -e
 
-apt install {}
+sudo apt install {}
 '''
 
 
