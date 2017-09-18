@@ -4,7 +4,9 @@
 
 echo "Install pre-requisites..."
 
-pip install virtualenv
-sudo apt install openjdk-8-jdk-headless
-sudo apt install maven
-sudo apt-get install  mysql-server-5.7
+sudo apt install -y python-pip
+sudo pip install --upgrade pip
+sudo pip install virtualenv
+sudo apt install -y openjdk-8-jdk-headless
+sudo apt install -y maven
+sudo apt-get install  -y mysql-server-5.7
