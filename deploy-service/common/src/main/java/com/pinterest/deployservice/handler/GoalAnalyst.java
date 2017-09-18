@@ -643,9 +643,64 @@ public class GoalAnalyst {
                          * Case 1.3: This is the case where agent has a fatal failure, and should not be given
                          * any more change to try, set the state as PAUSED_BY_SYSTEM, not a deploy candidate.
                          */
-                        LOG.debug("GoalAnalyst case 1.3 - host {} failed on stage {} for same deploy {} " +
-                            "will be set to PAUSED_BY_SYSTEM, not a goal candidate.",
-                            host, report.getDeployStage(), env.getDeploy_id(), env.getEnv_id());
+
+                        // check to see whether there is any other deploys.
+
+                        // check to see whether there is other deployIds available for this host.
+                        // get all the deployIds for the agent
+
+                        List<AgentBean> agentBeansByHostId = agentDAO.getByHostId(host_id);
+                        LOG.debug("=== minglog: got deployIds num {} for host_id {}", agentBeansByHostId.size(), host_id);
+
+                        List<AgentBean> agentBeansByHostname = agentDAO.getByHost(host);
+                        LOG.debug("=== minglog: got deployIds num {} for hostname {}", agentBeansByHostname.size(), host);
+
+                        List<AgentBean> agentBeans = agentDAO.getByHostEnvIds(host_id, envId);
+                        LOG.debug("=== minglog: got deployIds num {} for host_id {} with envId {}", agentBeans.size(), host_id, envId);
+                        Set<String> agentDeployedIds = new HashSet<>();
+                        for (AgentBean bean : agentBeans) {
+                            agentDeployedIds.add(bean.getDeploy_id());
+                            LOG.debug("=== minglog: got deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
+                        }
+
+                        // get all the running deployIds for the env
+                        List<DeployBean> runningDeploys = deployDAO.getRunningDeploys(envId);
+
+                        // Find one running deployId that is not deployed to this agent yet.
+                        String newDepoyId = null;
+                        DeployType newDeployType = null;
+                        for (DeployBean deployBean : runningDeploys) {
+                            if (!agentDeployedIds.contains(deployBean.getDeploy_id())) {
+                                newDepoyId = deployBean.getDeploy_id();
+                                newDeployType = deployBean.getDeploy_type();
+                                // minglog: todo - break here.
+                            }
+                            LOG.debug("=== minglog: running deploy Id {} for envId {}", deployBean.getDeploy_id(), envId);
+                        }
+
+                        // change env deployIds if there are still deployIds not done yet.
+                        if (newDepoyId != null) {
+                            // update environment
+                            EnvironBean updateEnvBean = new EnvironBean();
+                            updateEnvBean.setDeploy_id(newDepoyId);
+                            updateEnvBean.setDeploy_type(newDeployType);
+                            environDAO.update(envId, updateEnvBean);
+                            LOG.debug("=== minglog: updated env {} to deployId {}", envId, newDepoyId);
+
+                            EnvironBean newEnv = environDAO.getById(envId);
+                            installNewBean(newEnv, report, agent);
+
+                            LOG.debug("== minglog: installNewBean.");
+                            LOG.debug("GoalAnalyst case 1.3 - find a new deploy candidate for failed agent on " +
+                                    "host {}, deploy id: {}, environment id: {} ",
+                                    host, updateEnvBean.getDeploy_id(), env.getEnv_id());
+                        } else {
+                            LOG.debug("=== minglog: no more running deployments for host {}", host);
+                            LOG.debug("GoalAnalyst case 1.3 - host {} failed on stage {} for same deploy {} " +
+                                            "will be set to PAUSED_BY_SYSTEM, not a goal candidate.",
+                                    host, report.getDeployStage(), env.getDeploy_id(), env.getEnv_id());
+                        }
+
                         return;
                     } else {
                         /**

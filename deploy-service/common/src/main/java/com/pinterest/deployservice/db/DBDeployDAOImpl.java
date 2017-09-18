@@ -39,7 +39,7 @@ import java.util.List;
 
 public class DBDeployDAOImpl implements DeployDAO {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
 
     private static final String INSERT_DEPLOYMENT_TEMPLATE =
         "INSERT INTO deploys SET %s";
@@ -190,7 +190,7 @@ public class DBDeployDAOImpl implements DeployDAO {
                 typesClause =
                 QueryUtils.genEnumGroupClause(StateMachines.AUTO_RUNNING_DEPLOY_TYPE);
 
-        LOG.debug("minglog: getRunningDeploys: query: " + String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause));
+//        LOG.debug("minglog: getRunningDeploys: query: " + String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause));
 
         return new QueryRunner(dataSource).query(
                 String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause), h);
