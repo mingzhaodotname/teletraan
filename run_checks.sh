@@ -10,3 +10,6 @@ java -version
 javac -version
 mvn --version
 mysql --version
+
+echo status: $?
+echo -e "\n=== Congratulations - all pre-requisites are installed ==="
