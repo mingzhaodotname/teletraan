@@ -22,6 +22,7 @@ import com.pinterest.deployservice.bean.UpdateStatement;
 import com.pinterest.deployservice.common.StateMachines;
 import com.pinterest.deployservice.dao.DeployDAO;
 
+import com.pinterest.deployservice.handler.PingHandler;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -30,11 +31,15 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.List;
 
 public class DBDeployDAOImpl implements DeployDAO {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
 
     private static final String INSERT_DEPLOYMENT_TEMPLATE =
         "INSERT INTO deploys SET %s";
@@ -183,7 +188,10 @@ public class DBDeployDAOImpl implements DeployDAO {
         ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
         String
                 typesClause =
-                QueryUtils.genEnumGroupClause(StateMachines.AUTO_PROMOTABLE_DEPLOY_TYPE);
+                QueryUtils.genEnumGroupClause(StateMachines.AUTO_RUNNING_DEPLOY_TYPE);
+
+        LOG.debug("minglog: getRunningDeploys: query: " + String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause));
+
         return new QueryRunner(dataSource).query(
                 String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause), h);
     }

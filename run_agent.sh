@@ -16,3 +16,6 @@ pip install python-daemon==2.0.6
 # python setup.py build
 # python setup.py install
 
+echo ""
+echo "=== TODO: cd $TELETRAAN_ROOT/deploy-agent && source ./venv/bin/activate"
+echo "=== TODO: run deploy agent when needed: deploy-agent"

@@ -264,6 +264,7 @@ public class GoalAnalyst {
         if (FATAL_AGENT_STATUSES.contains(status)) {
             // Fatal error, pause agent deploy
             LOG.debug("Report status is {}, propose new agent state as {} ", status, AgentState.PAUSED_BY_SYSTEM);
+            // return AgentState.RESET;  // minglog
             return AgentState.PAUSED_BY_SYSTEM;
         }
 
@@ -589,7 +590,7 @@ public class GoalAnalyst {
                     Set<String> agentDeployedIds = new HashSet<>();
                     for (AgentBean bean : agentBeans) {
                         agentDeployedIds.add(bean.getDeploy_id());
-                        LOG.debug("=== minglog: deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
+                        LOG.debug("=== minglog: got deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
                     }
 
                     // get all the running deployIds for the env
