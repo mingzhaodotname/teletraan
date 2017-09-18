@@ -10,3 +10,4 @@ sudo pip install virtualenv
 sudo apt install -y openjdk-8-jdk-headless
 sudo apt install -y maven
 sudo apt-get install  -y mysql-server-5.7
+sudo apt install -y curl
