@@ -774,11 +774,18 @@ public class GoalAnalyst {
                             installNewBean(newEnv, report, agent);
 
                             LOG.debug("== minglog: installNewBean.");
-                            LOG.debug("== minglog: clear errorMessage for the envId {}", envId);
-                            errorMessages.put(envId, "");
+//                            LOG.debug("== minglog: clear errorMessage for the envId {}", envId);
+//                            errorMessages.put(envId, "");
+
+                            if (updateBean != null) {
+                                LOG.debug("== minglog: update agent bean: {}", updateBean);
+                                agentDAO.insertOrUpdate(updateBean);
+                            }
+
                             LOG.debug("GoalAnalyst case 1.3 - find a new deploy candidate for failed agent on " +
                                     "host {}, deploy id: {}, environment id: {} ",
                                     host, updateEnvBean.getDeploy_id(), env.getEnv_id());
+
                         } else {
                             LOG.debug("=== minglog: no more running deployments for host {}", host);
                             LOG.debug("GoalAnalyst case 1.3 - host {} failed on stage {} for same deploy {} " +

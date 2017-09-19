@@ -70,6 +70,7 @@ public class DBAgentDAOImpl implements AgentDAO {
     private static final String GET_NON_FIRST_TIME_DEPLOY_TOTAL =
         "SELECT COUNT(*) FROM agents WHERE env_id=? AND first_deploy=0";
     private static final String COUNT_ALL_AGENT_BY_ENV = "SELECT COUNT(*) FROM agents WHERE env_id=?";
+    private static final String COUNT_ALL_AGENT_BY_DEPLOY_ID = "SELECT COUNT(*) FROM agents WHERE deploy_id=?";
     private static final String COUNT_ALL_AGENT_BY_ENV_NAME = "SELECT COUNT(*) FROM agents WHERE env_name=?";
     private static final String COUNT_SERVING_TOTAL = "SELECT COUNT(*) FROM agents WHERE env_id=? AND deploy_stage=?";
     private static final String COUNT_SERVING_AND_NORMAL_TOTAL = "SELECT COUNT(*) FROM agents WHERE env_id=? AND deploy_stage=? AND state=?";
@@ -210,6 +211,13 @@ public class DBAgentDAOImpl implements AgentDAO {
     public long countAgentByEnv(String envId) throws Exception {
         Long n = new QueryRunner(dataSource).query(COUNT_ALL_AGENT_BY_ENV,
             SingleResultSetHandlerFactory.<Long>newObjectHandler(), envId);
+        return n == null ? 0 : n;
+    }
+
+    @Override
+    public long countAgentByDeployId(String deployId) throws Exception {
+        Long n = new QueryRunner(dataSource).query(COUNT_ALL_AGENT_BY_DEPLOY_ID,
+                SingleResultSetHandlerFactory.<Long>newObjectHandler(), deployId);
         return n == null ? 0 : n;
     }
 

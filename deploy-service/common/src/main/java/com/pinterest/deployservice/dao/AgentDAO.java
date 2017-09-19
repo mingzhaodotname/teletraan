@@ -65,6 +65,7 @@ public interface AgentDAO {
 
     // return how many agent reports for this env regardless of deployId or stage
     long countAgentByEnv(String envId) throws Exception;
+    long countAgentByDeployId(String deployId) throws Exception;
 
     // return how many agent state is PAUSED_BY_SYSTEM, or stuck/failed
     long countStuckAgent(String envId, String deployId) throws Exception;

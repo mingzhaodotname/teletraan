@@ -454,6 +454,8 @@ public class PingHandler {
         }
 
         // Apply ping report change as needed
+        // minglog: ???, why it updated here? Maybe because everything it needs to update the agent bean,
+        // especially when it is a new state (e.g. UNKNOWN)
         if (!updateBeans.isEmpty()) {
             LOG.debug("Update {} agent records for host {}.", updateBeans.size(), hostName);
             updateAgentsSafely(updateBeans.values(), analyst.getErrorMessages());
