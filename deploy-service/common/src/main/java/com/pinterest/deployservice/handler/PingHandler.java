@@ -460,7 +460,7 @@ public class PingHandler {
         }
 
         // minglog: udpate deploy record with the error processed and simplified message
-        updateDeployError(analyst.getErrorMessages());
+//        updateDeployError(analyst.getErrorMessages());
 
         if (response != null) {
             DeployGoalBean goal = response.getDeployGoal();

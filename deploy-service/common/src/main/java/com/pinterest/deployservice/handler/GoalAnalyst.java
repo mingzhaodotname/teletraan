@@ -443,6 +443,45 @@ public class GoalAnalyst {
         return;
     }
 
+    void updateDeployError(Map<String, String> errorMessages) {  // minglog
+        LOG.debug("=== minglog: Update deploy error message");
+//        String DEPLOY_EXCEPTION = "DeployException:";
+        String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
+        for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
+            String envId = entry.getKey();
+            String origErrorMessage = entry.getValue();
+            LOG.debug(String.format("=== minglog: Update deploy error message for envId: {}, " +
+                    "with original error message: {}", envId, origErrorMessage));
+
+            String errorMessage = null;
+            String lines[] = origErrorMessage.split("\\r?\\n");
+            for (String line : lines) {
+                int index = line.indexOf(DEPLOY_EXCEPTION);
+
+                if (index >= 0) {
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length()).trim();
+                    break;
+                }
+            }
+
+            if (!StringUtils.isEmpty(errorMessage)) {
+                DeployBean updateBean = new DeployBean();
+//              updateBean.setState(finalState);
+                updateBean.setError_message(errorMessage);
+                updateBean.setLast_update(System.currentTimeMillis());
+                try {
+                    EnvironBean environBean = environDAO.getById(envId);
+                    LOG.error("=== minglog: updating deploy {} with error message: {}.",
+                            environBean.getDeploy_id(), errorMessage);
+                    deployDAO.update(environBean.getDeploy_id(), updateBean);
+                } catch (Exception e) {
+                    LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
+                }
+            }
+        }
+
+    }
+
     /**
      * Compute suggested next step based on current env deploy, report deploy and agent status
      */
@@ -541,6 +580,9 @@ public class GoalAnalyst {
                 }
             }
         }
+
+        // minglog
+        updateDeployError(this.getErrorMessages());
 
         /**
          * Case 1: Both report & env are valid
@@ -691,6 +733,8 @@ public class GoalAnalyst {
                             installNewBean(newEnv, report, agent);
 
                             LOG.debug("== minglog: installNewBean.");
+                            LOG.debug("== minglog: clear errorMessage for the envId {}", envId);
+                            errorMessages.put(envId, "");
                             LOG.debug("GoalAnalyst case 1.3 - find a new deploy candidate for failed agent on " +
                                     "host {}, deploy id: {}, environment id: {} ",
                                     host, updateEnvBean.getDeploy_id(), env.getEnv_id());
