@@ -55,8 +55,10 @@ public class GoalAnalyst {
     // Agents need to be updated, largely based on reports
     private Map<String, AgentBean> needUpdateAgents = new HashMap<>();
 
-    // Agent error message
+    // Agent error message, by envId.
     private Map<String, String> errorMessages = new HashMap<>();
+    // by deployId
+    private Map<String, String> deployErrorMessages = new HashMap<>();
 
     // Agents need to be deleted, due to the missing reports
     private List<String> needDeleteAgentEnvIds = new ArrayList<>();
@@ -443,7 +445,7 @@ public class GoalAnalyst {
         return;
     }
 
-    void updateDeployError(Map<String, String> errorMessages) {  // minglog
+    void updateDeployErrorByEnvId(Map<String, String> errorMessages) {  // minglog
         LOG.debug("=== minglog: Update deploy error message");
 //        String DEPLOY_EXCEPTION = "DeployException:";
         String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
@@ -482,6 +484,44 @@ public class GoalAnalyst {
 
     }
 
+    void updateDeployErrorByDeployId(Map<String, String> deployErrorMessages) {  // minglog
+        LOG.debug("=== minglog: Update deploy error message");
+//        String DEPLOY_EXCEPTION = "DeployException:";
+        String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
+        for (Map.Entry<String, String> entry : deployErrorMessages.entrySet()) {
+            String deployId = entry.getKey();
+            String origErrorMessage = entry.getValue();
+            LOG.debug(String.format("=== minglog: Update deploy error message for deployId: {}, " +
+                    "with original error message: {}", deployId, origErrorMessage));
+
+            String errorMessage = null;
+            String lines[] = origErrorMessage.split("\\r?\\n");
+            for (String line : lines) {
+                int index = line.indexOf(DEPLOY_EXCEPTION);
+
+                if (index >= 0) {
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length()).trim();
+                    break;
+                }
+            }
+
+            if (!StringUtils.isEmpty(errorMessage)) {
+                DeployBean updateBean = new DeployBean();
+//              updateBean.setState(finalState);
+                updateBean.setError_message(errorMessage);
+                updateBean.setLast_update(System.currentTimeMillis());
+                try {
+                    LOG.error("=== minglog: updating deploy {} with error message: {}.",
+                            deployId, errorMessage);
+                    deployDAO.update(deployId, updateBean);
+                } catch (Exception e) {
+                    LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
+                }
+            }
+        }
+
+    }
+
     /**
      * Compute suggested next step based on current env deploy, report deploy and agent status
      */
@@ -501,6 +541,10 @@ public class GoalAnalyst {
                 needUpdateAgents.put(envId, updateBean);
                 if (report.getErrorMessage() != null) {
                     errorMessages.put(envId, report.getErrorMessage());
+                    deployErrorMessages.put(report.getDeployId(), report.getErrorMessage());
+                    // minglog
+                    // updateDeployError(this.getErrorMessages());
+//                    updateDeployErrorByDeployId(this.deployErrorMessages);
                 }
             }
         }
@@ -580,9 +624,6 @@ public class GoalAnalyst {
                 }
             }
         }
-
-        // minglog
-        updateDeployError(this.getErrorMessages());
 
         /**
          * Case 1: Both report & env are valid
@@ -834,6 +875,8 @@ public class GoalAnalyst {
         for (String envId : envIds) {
             process(envId, envs.get(envId), reports.get(envId), agents.get(envId));
         }
+
+        updateDeployErrorByDeployId(this.deployErrorMessages);  // minglog
 
         // Sort the install candidates
         if (installCandidates.size() > 1) {

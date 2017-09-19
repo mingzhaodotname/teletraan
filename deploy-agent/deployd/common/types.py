@@ -74,6 +74,10 @@ class DeployReport(object):
         self.output_msg = output_msg
         self.retry_times = retry_times
 
+    def __str__(self):
+        return 'status_code: {}, error_code: {}, output_msg: {}, retry_times: {}'.format(
+            self.status_code, self.error_code, self.output_msg, self.retry_times)
+
 
 class PingStatus(object):
     PLAN_NO_CHANGE = 0  # the deploy plan is not changed
