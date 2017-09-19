@@ -4,6 +4,7 @@
 
 echo "Check pre-requisites..."
 wget --version
+curl --version
 virtualenv --version
 python --version
 java -version
