@@ -144,38 +144,40 @@ public class ConfigHelper {
                 LOG.info("Scheduled StateTransitioner.");
             }
 
-            if (workerName.equalsIgnoreCase(AutoPromoter.class.getSimpleName())) {
-                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-                Runnable worker = new AutoPromoter(serviceContext);
-                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
-                LOG.info("Scheduled AutoPromoter.");
-            }
+//             minglog - disable AutoPromote
+//            if (workerName.equalsIgnoreCase(AutoPromoter.class.getSimpleName())) {
+//                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//                Runnable worker = new AutoPromoter(serviceContext);
+//                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
+//                LOG.info("Scheduled AutoPromoter.");
+//            }
 
-            if (workerName.equalsIgnoreCase(HotfixStateTransitioner.class.getSimpleName())) {
-                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-                Runnable worker = new HotfixStateTransitioner(serviceContext);
-                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
-                LOG.info("Scheduled HotfixStateTransitioner.");
-            }
+//            if (workerName.equalsIgnoreCase(HotfixStateTransitioner.class.getSimpleName())) {
+//                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//                Runnable worker = new HotfixStateTransitioner(serviceContext);
+//                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
+//                LOG.info("Scheduled HotfixStateTransitioner.");
+//            }
 
-            if (workerName.equalsIgnoreCase(SimpleAgentJanitor.class.getSimpleName())) {
-                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-                int minStaleHostThreshold = MapUtils.getIntValue(properties, "minStaleHostThreshold", DEFAULT_MIN_STALE_HOST_THRESHOLD);
-                int maxStaleHostThreshold = MapUtils.getIntValue(properties, "maxStaleHostThreshold", DEFAULT_MAX_STALE_HOST_THRESHOLD);
-                Runnable worker = new SimpleAgentJanitor(serviceContext, minStaleHostThreshold, maxStaleHostThreshold);
-                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
-                LOG.info("Scheduled SimpleAgentJanitor.");
-            }
+//            minglog: disabled SimpleAgentJanitor
+//            if (workerName.equalsIgnoreCase(SimpleAgentJanitor.class.getSimpleName())) {
+//                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//                int minStaleHostThreshold = MapUtils.getIntValue(properties, "minStaleHostThreshold", DEFAULT_MIN_STALE_HOST_THRESHOLD);
+//                int maxStaleHostThreshold = MapUtils.getIntValue(properties, "maxStaleHostThreshold", DEFAULT_MAX_STALE_HOST_THRESHOLD);
+//                Runnable worker = new SimpleAgentJanitor(serviceContext, minStaleHostThreshold, maxStaleHostThreshold);
+//                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
+//                LOG.info("Scheduled SimpleAgentJanitor.");
+//            }
 
-            if (workerName.equalsIgnoreCase(AgentJanitor.class.getSimpleName())) {
-                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-                int minStaleHostThreshold = MapUtils.getIntValue(properties, "minStaleHostThreshold", DEFAULT_MIN_STALE_HOST_THRESHOLD);
-                int maxStaleHostThreshold = MapUtils.getIntValue(properties, "maxStaleHostThreshold", DEFAULT_MAX_STALE_HOST_THRESHOLD);
-                int maxLaunchLatencyThreshold = MapUtils.getIntValue(properties, "maxLaunchLaencyThreshold", DEFAULT_LAUNCH_LATENCY_THRESHOLD);
-                Runnable worker = new AgentJanitor(serviceContext, minStaleHostThreshold, maxStaleHostThreshold, maxLaunchLatencyThreshold);
-                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
-                LOG.info("Scheduled AgentJanitor.");
-            }
+//            if (workerName.equalsIgnoreCase(AgentJanitor.class.getSimpleName())) {
+//                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//                int minStaleHostThreshold = MapUtils.getIntValue(properties, "minStaleHostThreshold", DEFAULT_MIN_STALE_HOST_THRESHOLD);
+//                int maxStaleHostThreshold = MapUtils.getIntValue(properties, "maxStaleHostThreshold", DEFAULT_MAX_STALE_HOST_THRESHOLD);
+//                int maxLaunchLatencyThreshold = MapUtils.getIntValue(properties, "maxLaunchLaencyThreshold", DEFAULT_LAUNCH_LATENCY_THRESHOLD);
+//                Runnable worker = new AgentJanitor(serviceContext, minStaleHostThreshold, maxStaleHostThreshold, maxLaunchLatencyThreshold);
+//                scheduler.scheduleAtFixedRate(worker, initDelay, period, TimeUnit.SECONDS);
+//                LOG.info("Scheduled AgentJanitor.");
+//            }
 
             // Schedule cron like jobs
             JobDetail deployJanitorJob = null;
