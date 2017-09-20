@@ -16,11 +16,14 @@
 package com.pinterest.teletraan.worker;
 
 import com.pinterest.deployservice.ServiceContext;
+import com.pinterest.deployservice.bean.DeployBean;
 import com.pinterest.deployservice.dao.EnvironDAO;
+import com.pinterest.deployservice.dao.DeployDAO;
 import com.pinterest.deployservice.handler.CommonHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,16 +34,26 @@ public class StateTransitioner implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(StateTransitioner.class);
 
     private EnvironDAO environDAO;
+    private DeployDAO deployDAO;
     private CommonHandler commonHandler;
 
     public StateTransitioner(ServiceContext serviceContext) {
         environDAO = serviceContext.getEnvironDAO();
+        deployDAO = serviceContext.getDeployDAO();
         commonHandler = new CommonHandler(serviceContext);
     }
 
     void processBatch() throws Exception {
         // Get all current deploys, randomly pick one to work on
-        List<String> deployIds = environDAO.getCurrentDeployIds();
+//        List<String> deployIds = environDAO.getCurrentDeployIds();
+
+        // env state is NORMAL;
+        List<DeployBean> deployBeans = deployDAO.getAllRunningDeploys();
+        List<String> deployIds = new ArrayList<>();
+        for (DeployBean deployBean : deployBeans) {
+            deployIds.add(deployBean.getDeploy_id());
+        }
+
         if (deployIds.isEmpty()) {
             LOG.info("StateTransitioner did not find any active deploy, exiting.");
             return;

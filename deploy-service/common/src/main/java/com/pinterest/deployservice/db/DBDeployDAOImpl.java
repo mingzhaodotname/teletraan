@@ -22,7 +22,6 @@ import com.pinterest.deployservice.bean.UpdateStatement;
 import com.pinterest.deployservice.common.StateMachines;
 import com.pinterest.deployservice.dao.DeployDAO;
 
-import com.pinterest.deployservice.handler.PingHandler;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -31,8 +30,6 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.List;
@@ -65,6 +62,10 @@ public class DBDeployDAOImpl implements DeployDAO {
 
     private static final String GET_RUNNING_DEPLOYS_TEMPLATE =
             "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type IN (%s) " +
+                    "AND state IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
+
+    private static final String GET_ALL_RUNNING_DEPLOYS_TEMPLATE =
+            "SELECT * FROM deploys WHERE deploy_type IN (%s) " +
                     "AND state IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
 
     private static final String GET_ACCEPTED_DEPLOYS_DELAYED_TEMPLATE =
@@ -188,7 +189,7 @@ public class DBDeployDAOImpl implements DeployDAO {
         ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
         String
                 typesClause =
-                QueryUtils.genEnumGroupClause(StateMachines.AUTO_RUNNING_DEPLOY_TYPE);
+                QueryUtils.genEnumGroupClause(StateMachines.RUNNING_DEPLOY_TYPE);
 
 //        LOG.debug("minglog: getRunningDeploys: query: " + String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause));
 
@@ -196,6 +197,17 @@ public class DBDeployDAOImpl implements DeployDAO {
                 String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause), h);
     }
 
+    @Override
+    public List<DeployBean> getAllRunningDeploys()
+            throws Exception {
+        ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
+        String
+                typesClause =
+                QueryUtils.genEnumGroupClause(StateMachines.RUNNING_DEPLOY_TYPE);
+
+        return new QueryRunner(dataSource).query(
+                String.format(GET_ALL_RUNNING_DEPLOYS_TEMPLATE, typesClause), h);
+    }
 
 
     @Override

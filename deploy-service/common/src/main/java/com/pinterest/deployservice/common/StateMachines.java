@@ -27,7 +27,7 @@ public class StateMachines {
     public static final Set<HotfixState> HOTFIX_ONGOING_STATES = new HashSet<>();
     public static final Set<DeployState> DEPLOY_ACTIVE_STATES = new HashSet<>();
     public static final Set<DeployType> AUTO_PROMOTABLE_DEPLOY_TYPE = new HashSet<>();
-    public static final Set<DeployType> AUTO_RUNNING_DEPLOY_TYPE = new HashSet<>();
+    public static final Set<DeployType> RUNNING_DEPLOY_TYPE = new HashSet<>();
     public static final Set<DeployState> DEPLOY_FINAL_STATES = new HashSet<>();
     public static final Set<EnvState> ENV_DEPLOY_STATES = new HashSet<>();
     public static final Set<AcceptanceStatus> FINAL_ACCEPTANCE_STATUSES = new HashSet<>();
@@ -63,10 +63,10 @@ public class StateMachines {
         AUTO_PROMOTABLE_DEPLOY_TYPE.add(DeployType.HOTFIX);
 
 
-        AUTO_RUNNING_DEPLOY_TYPE.add(DeployType.REGULAR);
-        AUTO_RUNNING_DEPLOY_TYPE.add(DeployType.HOTFIX);
-        AUTO_RUNNING_DEPLOY_TYPE.add(DeployType.RESTART);
-        AUTO_RUNNING_DEPLOY_TYPE.add(DeployType.ROLLBACK);
+        RUNNING_DEPLOY_TYPE.add(DeployType.REGULAR);
+        RUNNING_DEPLOY_TYPE.add(DeployType.HOTFIX);
+        RUNNING_DEPLOY_TYPE.add(DeployType.RESTART);
+        RUNNING_DEPLOY_TYPE.add(DeployType.ROLLBACK);
 
         FINAL_ACCEPTANCE_STATUSES.add(AcceptanceStatus.ACCEPTED);
         FINAL_ACCEPTANCE_STATUSES.add(AcceptanceStatus.REJECTED);

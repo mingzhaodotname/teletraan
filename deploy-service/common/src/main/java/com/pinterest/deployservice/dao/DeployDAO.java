@@ -46,6 +46,7 @@ public interface DeployDAO {
     List<DeployBean> getAcceptedDeploys(String envId, Interval interval, int size) throws Exception;
 
     List<DeployBean> getRunningDeploys(String envId) throws Exception;
+    List<DeployBean> getAllRunningDeploys() throws Exception;
 
     // Return upto size number of ACCEPTED deploy whose suc_date is before before and build publish time is after after
     List<DeployBean> getAcceptedDeploysDelayed(String envId, Interval interval) throws Exception;
