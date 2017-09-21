@@ -15,7 +15,7 @@
  */
 package com.pinterest.deployservice.dao;
 
-import com.pinterest.deployservice.bean.PackageBean;
+import com.pinterest.deployservice.bean.Pg2PackageBean;
 
 import java.util.List;
 
@@ -23,13 +23,13 @@ import java.util.List;
  * A collection of methods to help interact with table BUILDS
  */
 public interface Pg2PackagesDAO {
-    void insert(PackageBean PackageBean) throws Exception;
+    void insert(Pg2PackageBean Pg2PackageBean) throws Exception;
     void delete(String packageId) throws Exception;
 
-    PackageBean getById(String packageId) throws Exception;
+    Pg2PackageBean getById(String packageId) throws Exception;
 
 
 //    List<String> getBuildNames(String nameFilter, int pageIndex, int pageSize) throws Exception;
 
-    List<PackageBean> getByGroupId(String groupId) throws Exception;
+    List<Pg2PackageBean> getByGroupId(String groupId) throws Exception;
 }

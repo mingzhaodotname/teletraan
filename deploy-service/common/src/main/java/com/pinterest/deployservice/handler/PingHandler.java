@@ -556,12 +556,12 @@ public class PingHandler {
                 : getFromCache(buildCache, deployBean.getBuild_id());
         LOG.debug("minglog: deployId: {}", deployBean.getDeploy_id());
         LOG.debug("minglog: buildId: {}", buildBean.getBuild_id());
-        List<PackageBean> packageBeans = pg2PackagesDAO.getByGroupId(buildBean.getBuild_id());
+        List<Pg2PackageBean> pg2PackageBeans = pg2PackagesDAO.getByGroupId(buildBean.getBuild_id());
         List<String> packages = new ArrayList<>();
-        for (PackageBean packageBean : packageBeans) {
+        for (Pg2PackageBean pg2PackageBean : pg2PackageBeans) {
 //            String packageName = String.format(
-//                    "{}.{}", packageBean.getPackage_name() + packageBean.getPackage_version());
-            packages.add(packageBean.getPackage_url());
+//                    "{}.{}", pg2PackageBean.getPackage_name() + pg2PackageBean.getPackage_version());
+            packages.add(pg2PackageBean.getPackage_url());
         }
         goal.setPackages(packages);
         LOG.debug("minglog: goal.getPackages(): {}", goal.getPackages());

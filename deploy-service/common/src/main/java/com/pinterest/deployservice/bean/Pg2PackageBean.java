@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  * CREATE TABLE builds (
  * );
  */
-public class PackageBean implements Updatable {
+public class Pg2PackageBean implements Updatable {
     @JsonProperty("id")
     private String package_id;
 

@@ -218,36 +218,36 @@ public class Builds {
         LOG.info("requested package {}", buildBean.getPackages());
         if (buildBean.getPackages() != null) {
             LOG.info("requested package size: {}", buildBean.getPackages().size());
-            for (PackageBean packageBean : buildBean.getPackages()) {
+            for (Pg2PackageBean pg2PackageBean : buildBean.getPackages()) {
                 String packageId = CommonUtils.getBase64UUID();
-                packageBean.setPackage_id(packageId);
+                pg2PackageBean.setPackage_id(packageId);
                 // TOD: what if package name and version are not specified.
 
-                if (StringUtils.isEmpty(packageBean.getPackage_url())) {
-                    packageBean.setPackage_url("UNKNOWN");
+                if (StringUtils.isEmpty(pg2PackageBean.getPackage_url())) {
+                    pg2PackageBean.setPackage_url("UNKNOWN");
                 }
 
-                if (packageBean.getPublish_date() == null) {
-                    packageBean.setPublish_date(System.currentTimeMillis());
+                if (pg2PackageBean.getPublish_date() == null) {
+                    pg2PackageBean.setPublish_date(System.currentTimeMillis());
                 }
 
-                if (StringUtils.isEmpty(packageBean.getPublish_info())) {
-                    packageBean.setPublish_info("UNKNOWN");
+                if (StringUtils.isEmpty(pg2PackageBean.getPublish_info())) {
+                    pg2PackageBean.setPublish_info("UNKNOWN");
                 }
 
-                if (StringUtils.isEmpty(packageBean.getPublisher())) {
-                    packageBean.setPublisher(sc.getUserPrincipal().getName());
+                if (StringUtils.isEmpty(pg2PackageBean.getPublisher())) {
+                    pg2PackageBean.setPublisher(sc.getUserPrincipal().getName());
                 }
 
-                if (StringUtils.isEmpty(packageBean.getGroup_id())) {
-                    packageBean.setGroup_id(buildId);
+                if (StringUtils.isEmpty(pg2PackageBean.getGroup_id())) {
+                    pg2PackageBean.setGroup_id(buildId);
                 }
 
-                if (StringUtils.isEmpty(packageBean.getBuild_id())) {
-                    packageBean.setBuild_id(buildId);
+                if (StringUtils.isEmpty(pg2PackageBean.getBuild_id())) {
+                    pg2PackageBean.setBuild_id(buildId);
                 }
-                pg2PackagesDAO.insert(packageBean);
-                LOG.info("Successfully published package {}", packageBean.getPackage_name());
+                pg2PackagesDAO.insert(pg2PackageBean);
+                LOG.info("Successfully published package {}", pg2PackageBean.getPackage_name());
                 // TODO: use transaction to write to data, ideally together with build.
             }
         }
@@ -255,8 +255,8 @@ public class Builds {
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();
         URI buildUri = ub.path(buildId).build();
         buildBean = buildDAO.getById(buildId);
-        List<PackageBean> newPackageBeans = pg2PackagesDAO.getByGroupId(buildId);
-        buildBean.setPackages(newPackageBeans);
+        List<Pg2PackageBean> newPg2PackageBeans = pg2PackagesDAO.getByGroupId(buildId);
+        buildBean.setPackages(newPg2PackageBeans);
 
         return Response.created(buildUri).entity(buildBean).build();
     }

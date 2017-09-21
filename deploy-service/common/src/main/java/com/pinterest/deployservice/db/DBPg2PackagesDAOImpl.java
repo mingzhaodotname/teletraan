@@ -15,7 +15,7 @@
  */
 package com.pinterest.deployservice.db;
 
-import com.pinterest.deployservice.bean.PackageBean;
+import com.pinterest.deployservice.bean.Pg2PackageBean;
 import com.pinterest.deployservice.bean.SetClause;
 import com.pinterest.deployservice.dao.Pg2PackagesDAO;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -43,8 +43,8 @@ public class DBPg2PackagesDAOImpl implements Pg2PackagesDAO {
     }
 
     @Override
-    public void insert(PackageBean PackageBean) throws Exception {
-        SetClause setClause = PackageBean.genSetClause();
+    public void insert(Pg2PackageBean Pg2PackageBean) throws Exception {
+        SetClause setClause = Pg2PackageBean.genSetClause();
         String clause = String.format(INSERT_PACKAGE_TEMPLATE, setClause.getClause());
         new QueryRunner(dataSource).update(clause, setClause.getValueArray());
     }
@@ -55,15 +55,15 @@ public class DBPg2PackagesDAOImpl implements Pg2PackagesDAO {
     }
 
     @Override
-    public PackageBean getById(String packageId) throws Exception {
-        ResultSetHandler<PackageBean> h = new BeanHandler<>(PackageBean.class);
+    public Pg2PackageBean getById(String packageId) throws Exception {
+        ResultSetHandler<Pg2PackageBean> h = new BeanHandler<>(Pg2PackageBean.class);
         return new QueryRunner(dataSource).query(GET_PACKAGE_BY_ID, h, packageId);
     }
 
     @Override
-    public List<PackageBean> getByGroupId(String groupId)
+    public List<Pg2PackageBean> getByGroupId(String groupId)
             throws Exception {
-        ResultSetHandler<List<PackageBean>> h = new BeanListHandler<>(PackageBean.class);
+        ResultSetHandler<List<Pg2PackageBean>> h = new BeanListHandler<>(Pg2PackageBean.class);
         return new QueryRunner(dataSource)
                 .query(GET_PACKAGES_BY_GROUP_ID, h, groupId);
     }
