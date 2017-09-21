@@ -87,7 +87,7 @@ public class BuildBean implements Updatable {
     private Long publish_date;
 
     @JsonProperty("packages")
-    private List<PackageBean> packages;
+    private List<Pg2PackageBean> packages;
 
     public String getScm_info() {
         return scm_info;
@@ -193,11 +193,11 @@ public class BuildBean implements Updatable {
         this.publish_date = publish_date;
     }
 
-    public void setPackages(List<PackageBean> packages) {
+    public void setPackages(List<Pg2PackageBean> packages) {
         this.packages = packages;
     }
 
-    public List<PackageBean> getPackages() {
+    public List<Pg2PackageBean> getPackages() {
         return this.packages;
     }
 

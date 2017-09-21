@@ -86,9 +86,9 @@ def publish_local_build(build_path, build_name='deploy-sentinel', branch='master
 #    packages.append(package2)
 
     package_hello = {}
-    package_hello['packageName'] = 'helloworld'
+    package_hello['packageName'] = 'hellojq'
     package_hello['packageVersion'] = '1.0.0'
-    package_hello['packageUrl'] = 'file:///tmp/packages/helloworld.deb'
+    package_hello['packageUrl'] = 'file:///tmp/packages/hellojq.deb'
 
     packages.append(package_hello)
     build['packages'] = packages;

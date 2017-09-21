@@ -55,8 +55,10 @@ public class GoalAnalyst {
     // Agents need to be updated, largely based on reports
     private Map<String, AgentBean> needUpdateAgents = new HashMap<>();
 
-    // Agent error message
+    // Agent error message, by envId.
     private Map<String, String> errorMessages = new HashMap<>();
+    // by deployId
+    private Map<String, String> deployErrorMessages = new HashMap<>();
 
     // Agents need to be deleted, due to the missing reports
     private List<String> needDeleteAgentEnvIds = new ArrayList<>();
@@ -264,6 +266,7 @@ public class GoalAnalyst {
         if (FATAL_AGENT_STATUSES.contains(status)) {
             // Fatal error, pause agent deploy
             LOG.debug("Report status is {}, propose new agent state as {} ", status, AgentState.PAUSED_BY_SYSTEM);
+            // return AgentState.RESET;  // minglog
             return AgentState.PAUSED_BY_SYSTEM;
         }
 
@@ -442,6 +445,83 @@ public class GoalAnalyst {
         return;
     }
 
+    void updateDeployErrorByEnvId(Map<String, String> errorMessages) {  // minglog
+        LOG.debug("=== minglog: Update deploy error message");
+//        String DEPLOY_EXCEPTION = "DeployException:";
+        String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
+        for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
+            String envId = entry.getKey();
+            String origErrorMessage = entry.getValue();
+            LOG.debug(String.format("=== minglog: Update deploy error message for envId: {}, " +
+                    "with original error message: {}", envId, origErrorMessage));
+
+            String errorMessage = null;
+            String lines[] = origErrorMessage.split("\\r?\\n");
+            for (String line : lines) {
+                int index = line.indexOf(DEPLOY_EXCEPTION);
+
+                if (index >= 0) {
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length()).trim();
+                    break;
+                }
+            }
+
+            if (!StringUtils.isEmpty(errorMessage)) {
+                DeployBean updateBean = new DeployBean();
+//              updateBean.setState(finalState);
+                updateBean.setError_message(errorMessage);
+                updateBean.setLast_update(System.currentTimeMillis());
+                try {
+                    EnvironBean environBean = environDAO.getById(envId);
+                    LOG.error("=== minglog: updating deploy {} with error message: {}.",
+                            environBean.getDeploy_id(), errorMessage);
+                    deployDAO.update(environBean.getDeploy_id(), updateBean);
+                } catch (Exception e) {
+                    LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
+                }
+            }
+        }
+
+    }
+
+    void updateDeployErrorByDeployId(Map<String, String> deployErrorMessages) {  // minglog
+        LOG.debug("=== minglog: Update deploy error message");
+//        String DEPLOY_EXCEPTION = "DeployException:";
+        String DEPLOY_EXCEPTION = "Exception:";  // This is more general to catch all kinds of exceptions.
+        for (Map.Entry<String, String> entry : deployErrorMessages.entrySet()) {
+            String deployId = entry.getKey();
+            String origErrorMessage = entry.getValue();
+            LOG.debug(String.format("=== minglog: Update deploy error message for deployId: {}, " +
+                    "with original error message: {}", deployId, origErrorMessage));
+
+            String errorMessage = null;
+            String lines[] = origErrorMessage.split("\\r?\\n");
+            for (String line : lines) {
+                int index = line.indexOf(DEPLOY_EXCEPTION);
+
+                if (index >= 0) {
+                    errorMessage = line.substring(index + DEPLOY_EXCEPTION.length()).trim();
+                    break;
+                }
+            }
+
+            if (!StringUtils.isEmpty(errorMessage)) {
+                DeployBean updateBean = new DeployBean();
+//              updateBean.setState(finalState);
+                updateBean.setError_message(errorMessage);
+                updateBean.setLast_update(System.currentTimeMillis());
+                try {
+                    LOG.error("=== minglog: updating deploy {} with error message: {}.",
+                            deployId, errorMessage);
+                    deployDAO.update(deployId, updateBean);
+                } catch (Exception e) {
+                    LOG.error("=== minglog: Failed to update deploy {}.", updateBean, e);
+                }
+            }
+        }
+
+    }
+
     /**
      * Compute suggested next step based on current env deploy, report deploy and agent status
      */
@@ -461,6 +541,10 @@ public class GoalAnalyst {
                 needUpdateAgents.put(envId, updateBean);
                 if (report.getErrorMessage() != null) {
                     errorMessages.put(envId, report.getErrorMessage());
+                    deployErrorMessages.put(report.getDeployId(), report.getErrorMessage());
+                    // minglog
+                    // updateDeployError(this.getErrorMessages());
+//                    updateDeployErrorByDeployId(this.deployErrorMessages);
                 }
             }
         }
@@ -589,7 +673,7 @@ public class GoalAnalyst {
                     Set<String> agentDeployedIds = new HashSet<>();
                     for (AgentBean bean : agentBeans) {
                         agentDeployedIds.add(bean.getDeploy_id());
-                        LOG.debug("=== minglog: deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
+                        LOG.debug("=== minglog: got deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
                     }
 
                     // get all the running deployIds for the env
@@ -642,9 +726,73 @@ public class GoalAnalyst {
                          * Case 1.3: This is the case where agent has a fatal failure, and should not be given
                          * any more change to try, set the state as PAUSED_BY_SYSTEM, not a deploy candidate.
                          */
-                        LOG.debug("GoalAnalyst case 1.3 - host {} failed on stage {} for same deploy {} " +
-                            "will be set to PAUSED_BY_SYSTEM, not a goal candidate.",
-                            host, report.getDeployStage(), env.getDeploy_id(), env.getEnv_id());
+
+                        // check to see whether there is any other deploys.
+
+                        // check to see whether there is other deployIds available for this host.
+                        // get all the deployIds for the agent
+
+                        List<AgentBean> agentBeansByHostId = agentDAO.getByHostId(host_id);
+                        LOG.debug("=== minglog: got deployIds num {} for host_id {}", agentBeansByHostId.size(), host_id);
+
+                        List<AgentBean> agentBeansByHostname = agentDAO.getByHost(host);
+                        LOG.debug("=== minglog: got deployIds num {} for hostname {}", agentBeansByHostname.size(), host);
+
+                        List<AgentBean> agentBeans = agentDAO.getByHostEnvIds(host_id, envId);
+                        LOG.debug("=== minglog: got deployIds num {} for host_id {} with envId {}", agentBeans.size(), host_id, envId);
+                        Set<String> agentDeployedIds = new HashSet<>();
+                        for (AgentBean bean : agentBeans) {
+                            agentDeployedIds.add(bean.getDeploy_id());
+                            LOG.debug("=== minglog: got deployed Id {} for host_id {} with envId {}", bean.getDeploy_id(), host_id, envId);
+                        }
+
+                        // get all the running deployIds for the env
+                        List<DeployBean> runningDeploys = deployDAO.getRunningDeploys(envId);
+
+                        // Find one running deployId that is not deployed to this agent yet.
+                        String newDepoyId = null;
+                        DeployType newDeployType = null;
+                        for (DeployBean deployBean : runningDeploys) {
+                            if (!agentDeployedIds.contains(deployBean.getDeploy_id())) {
+                                newDepoyId = deployBean.getDeploy_id();
+                                newDeployType = deployBean.getDeploy_type();
+                                // minglog: todo - break here.
+                            }
+                            LOG.debug("=== minglog: running deploy Id {} for envId {}", deployBean.getDeploy_id(), envId);
+                        }
+
+                        // change env deployIds if there are still deployIds not done yet.
+                        if (newDepoyId != null) {
+                            // update environment
+                            EnvironBean updateEnvBean = new EnvironBean();
+                            updateEnvBean.setDeploy_id(newDepoyId);
+                            updateEnvBean.setDeploy_type(newDeployType);
+                            environDAO.update(envId, updateEnvBean);
+                            LOG.debug("=== minglog: updated env {} to deployId {}", envId, newDepoyId);
+
+                            EnvironBean newEnv = environDAO.getById(envId);
+                            installNewBean(newEnv, report, agent);
+
+                            LOG.debug("== minglog: installNewBean.");
+//                            LOG.debug("== minglog: clear errorMessage for the envId {}", envId);
+//                            errorMessages.put(envId, "");
+
+                            if (updateBean != null) {
+                                LOG.debug("== minglog: update agent bean: {}", updateBean);
+                                agentDAO.insertOrUpdate(updateBean);
+                            }
+
+                            LOG.debug("GoalAnalyst case 1.3 - find a new deploy candidate for failed agent on " +
+                                    "host {}, deploy id: {}, environment id: {} ",
+                                    host, updateEnvBean.getDeploy_id(), env.getEnv_id());
+
+                        } else {
+                            LOG.debug("=== minglog: no more running deployments for host {}", host);
+                            LOG.debug("GoalAnalyst case 1.3 - host {} failed on stage {} for same deploy {} " +
+                                            "will be set to PAUSED_BY_SYSTEM, not a goal candidate.",
+                                    host, report.getDeployStage(), env.getDeploy_id(), env.getEnv_id());
+                        }
+
                         return;
                     } else {
                         /**
@@ -734,6 +882,8 @@ public class GoalAnalyst {
         for (String envId : envIds) {
             process(envId, envs.get(envId), reports.get(envId), agents.get(envId));
         }
+
+        updateDeployErrorByDeployId(this.deployErrorMessages);  // minglog
 
         // Sort the install candidates
         if (installCandidates.size() > 1) {

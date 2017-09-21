@@ -255,15 +255,17 @@ public class CommonHandler {
         }
     }
 
-    void transition(DeployBean deployBean, DeployBean newDeployBean, EnvironBean envBean) throws Exception {  
+    void transition(DeployBean deployBean, DeployBean newDeployBean, EnvironBean envBean) throws Exception {
         transitionSchedule(envBean);
         String deployId = deployBean.getDeploy_id();
         String envId = envBean.getEnv_id();
         DeployState oldState = deployBean.getState();
 
         int sucThreshold = envBean.getSuccess_th();
-        long total = agentDAO.countAgentByEnv(envId);
-        LOG.debug("There are total {} agents are expected for env {}", total, envId);
+//        long total = agentDAO.countAgentByEnv(envId);
+//        LOG.debug("There are total {} agents are expected for env {}", total, envId);
+        long total = agentDAO.countAgentByDeployId(deployId);
+        LOG.debug("There are total {} agents are expected for deployId {}", total, deployId);
 
         long succeeded = agentDAO.countSucceededAgent(envId, deployId);
         LOG.debug("Among them, {} agents are succeeded", succeeded);
@@ -307,6 +309,7 @@ public class CommonHandler {
             return;
         }
 
+        // minglog: ???
 //        String scheduleId = envBean.getSchedule_id();
 //        long duration = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - deployBean.getLast_update());
 //        long stuckTh = envBean.getStuck_th();
@@ -432,16 +435,17 @@ public class CommonHandler {
          * Make sure we do not have such a deploy which is not current but somehow not in the
          * final state. This should NOT happen, treat this as cleaning up for any potential wrong states
         */
-        if (!deployId.equals(envBean.getDeploy_id())) {
-            LOG.warn("Deploy {} has already been obsoleted but state {} is not final.", deployId, state);
-            DeployState finalState = StateMachines.FINAL_STATE_TRANSITION_MAP.get(state);
-            LOG.info("Transite deploy {} to {} state.", deployId, finalState);
-            DeployBean updateBean = new DeployBean();
-            updateBean.setState(finalState);
-            updateBean.setLast_update(System.currentTimeMillis());
-            deployDAO.update(deployId, updateBean);
-            return;
-        }
+        // minglog: one env has one deploy at a time.
+//        if (!deployId.equals(envBean.getDeploy_id())) {
+//            LOG.warn("Deploy {} has already been obsoleted but state {} is not final.", deployId, state);
+//            DeployState finalState = StateMachines.FINAL_STATE_TRANSITION_MAP.get(state);
+//            LOG.info("Transite deploy {} to {} state.", deployId, finalState);
+//            DeployBean updateBean = new DeployBean();
+//            updateBean.setState(finalState);
+//            updateBean.setLast_update(System.currentTimeMillis());
+//            deployDAO.update(deployId, updateBean);
+//            return;
+//        }
 
         DeployBean newPartialDeployBean = new DeployBean();
         transition(deployBean, newPartialDeployBean, envBean);

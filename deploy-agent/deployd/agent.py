@@ -104,6 +104,7 @@ class DeployAgent(object):
                 # update the current deploy goal
                 if self._response.deployGoal:
                     deploy_report = self.process_deploy(self._response)
+                    log.info("minglog: deploy_report after process_deploy(): {}".format(deploy_report))
                 else:
                     log.info('No new deploy goal to get updated')
                     deploy_report = DeployReport(AgentStatus.SUCCEEDED)
@@ -118,8 +119,12 @@ class DeployAgent(object):
                                              error_code=1,
                                              output_msg=traceback.format_exc(),
                                              retry_times=1)
+                log.info("minglog: deploy_report after Exception: {}".format(deploy_report))
 
+            log.info("minglog: deploy_report before  update_deploy_status: {}".format(deploy_report))
             self.update_deploy_status(deploy_report)
+            log.info("minglog: deploy_report after  update_deploy_status: {}".format(deploy_report))
+
             if deploy_report.status_code in [AgentStatus.AGENT_FAILED,
                                              AgentStatus.TOO_MANY_RETRY,
                                              AgentStatus.SCRIPT_TIMEOUT]:

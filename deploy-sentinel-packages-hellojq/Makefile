@@ -7,7 +7,7 @@ build:	clean
 	mkdir -p packages/
 	tar -czf quickstart-build.tar.gz packages
 	mkdir -p /tmp/packages/
-	cp helloworld.deb /tmp/packages/
+	cp hellojq.deb /tmp/packages/
 
 publish: build quickstart.py
 	python quickstart.py

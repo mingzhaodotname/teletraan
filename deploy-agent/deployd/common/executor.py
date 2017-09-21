@@ -190,6 +190,7 @@ class Executor(object):
 
     def execute_command(self, script):
         log.info("minglog: execute_command: os.getcwd(): {}".format(os.getcwd()))
+        log.info("minglog: execute_command: script:: {}".format(script))
 
         try:
             deploy_step = os.getenv('DEPLOY_STEP')

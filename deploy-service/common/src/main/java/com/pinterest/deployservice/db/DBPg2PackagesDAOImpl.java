@@ -15,9 +15,9 @@
  */
 package com.pinterest.deployservice.db;
 
-import com.pinterest.deployservice.bean.PackageBean;
+import com.pinterest.deployservice.bean.Pg2PackageBean;
 import com.pinterest.deployservice.bean.SetClause;
-import com.pinterest.deployservice.dao.PackageDAO;
+import com.pinterest.deployservice.dao.Pg2PackagesDAO;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -26,25 +26,25 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.util.List;
 
-public class DBPackageDAOImpl implements PackageDAO {
+public class DBPg2PackagesDAOImpl implements Pg2PackagesDAO {
 
-    private static final String INSERT_PACKAGE_TEMPLATE = "INSERT INTO packages SET %s";
-    private static final String DELETE_PACKAGE = "DELETE FROM packages WHERE package_id=?";
-    private static final String GET_PACKAGE_BY_ID = "SELECT * FROM packages WHERE package_id=?";
+    private static final String INSERT_PACKAGE_TEMPLATE = "INSERT INTO pg_and_packages SET %s";
+    private static final String DELETE_PACKAGE = "DELETE FROM pg_and_packages WHERE package_id=?";
+    private static final String GET_PACKAGE_BY_ID = "SELECT * FROM pg_and_packages WHERE package_id=?";
 
     private static final String GET_PACKAGES_BY_GROUP_ID =
-        "SELECT * FROM packages WHERE group_id=? ORDER BY publish_date ASC";
+        "SELECT * FROM pg_and_packages WHERE group_id=? ORDER BY publish_date ASC";
 
 
     private BasicDataSource dataSource;
 
-    public DBPackageDAOImpl(BasicDataSource dataSource) {
+    public DBPg2PackagesDAOImpl(BasicDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public void insert(PackageBean PackageBean) throws Exception {
-        SetClause setClause = PackageBean.genSetClause();
+    public void insert(Pg2PackageBean Pg2PackageBean) throws Exception {
+        SetClause setClause = Pg2PackageBean.genSetClause();
         String clause = String.format(INSERT_PACKAGE_TEMPLATE, setClause.getClause());
         new QueryRunner(dataSource).update(clause, setClause.getValueArray());
     }
@@ -55,15 +55,15 @@ public class DBPackageDAOImpl implements PackageDAO {
     }
 
     @Override
-    public PackageBean getById(String packageId) throws Exception {
-        ResultSetHandler<PackageBean> h = new BeanHandler<>(PackageBean.class);
+    public Pg2PackageBean getById(String packageId) throws Exception {
+        ResultSetHandler<Pg2PackageBean> h = new BeanHandler<>(Pg2PackageBean.class);
         return new QueryRunner(dataSource).query(GET_PACKAGE_BY_ID, h, packageId);
     }
 
     @Override
-    public List<PackageBean> getByGroupId(String groupId)
+    public List<Pg2PackageBean> getByGroupId(String groupId)
             throws Exception {
-        ResultSetHandler<List<PackageBean>> h = new BeanListHandler<>(PackageBean.class);
+        ResultSetHandler<List<Pg2PackageBean>> h = new BeanListHandler<>(Pg2PackageBean.class);
         return new QueryRunner(dataSource)
                 .query(GET_PACKAGES_BY_GROUP_ID, h, groupId);
     }

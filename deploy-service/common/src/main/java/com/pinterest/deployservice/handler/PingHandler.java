@@ -28,8 +28,6 @@ import com.google.common.cache.LoadingCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +55,7 @@ public class PingHandler {
     private AgentErrorDAO agentErrorDAO;
     private DeployDAO deployDAO;
     private BuildDAO buildDAO;
-    private PackageDAO packageDAO;
+    private Pg2PackagesDAO pg2PackagesDAO;
     private EnvironDAO environDAO;
     private HostDAO hostDAO;
     private UtilDAO utilDAO;
@@ -71,7 +69,7 @@ public class PingHandler {
         agentErrorDAO = serviceContext.getAgentErrorDAO();
         deployDAO = serviceContext.getDeployDAO();
         buildDAO = serviceContext.getBuildDAO();
-        packageDAO = serviceContext.getPackageDAO();
+        pg2PackagesDAO = serviceContext.getPg2PackagesDAO();
         environDAO = serviceContext.getEnvironDAO();
         hostDAO = serviceContext.getHostDAO();
         utilDAO = serviceContext.getUtilDAO();
@@ -454,13 +452,15 @@ public class PingHandler {
         }
 
         // Apply ping report change as needed
+        // minglog: ???, why it updated here? Maybe because everything it needs to update the agent bean,
+        // especially when it is a new state (e.g. UNKNOWN)
         if (!updateBeans.isEmpty()) {
             LOG.debug("Update {} agent records for host {}.", updateBeans.size(), hostName);
             updateAgentsSafely(updateBeans.values(), analyst.getErrorMessages());
         }
 
         // minglog: udpate deploy record with the error processed and simplified message
-        updateDeployError(analyst.getErrorMessages());
+//        updateDeployError(analyst.getErrorMessages());
 
         if (response != null) {
             DeployGoalBean goal = response.getDeployGoal();
@@ -556,12 +556,12 @@ public class PingHandler {
                 : getFromCache(buildCache, deployBean.getBuild_id());
         LOG.debug("minglog: deployId: {}", deployBean.getDeploy_id());
         LOG.debug("minglog: buildId: {}", buildBean.getBuild_id());
-        List<PackageBean> packageBeans = packageDAO.getByGroupId(buildBean.getBuild_id());
+        List<Pg2PackageBean> pg2PackageBeans = pg2PackagesDAO.getByGroupId(buildBean.getBuild_id());
         List<String> packages = new ArrayList<>();
-        for (PackageBean packageBean : packageBeans) {
+        for (Pg2PackageBean pg2PackageBean : pg2PackageBeans) {
 //            String packageName = String.format(
-//                    "{}.{}", packageBean.getPackage_name() + packageBean.getPackage_version());
-            packages.add(packageBean.getPackage_url());
+//                    "{}.{}", pg2PackageBean.getPackage_name() + pg2PackageBean.getPackage_version());
+            packages.add(pg2PackageBean.getPackage_url());
         }
         goal.setPackages(packages);
         LOG.debug("minglog: goal.getPackages(): {}", goal.getPackages());

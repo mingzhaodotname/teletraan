@@ -36,6 +36,8 @@ import java.util.List;
 
 public class DBDeployDAOImpl implements DeployDAO {
 
+//    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
+
     private static final String INSERT_DEPLOYMENT_TEMPLATE =
         "INSERT INTO deploys SET %s";
     private static final String UPDATE_DEPLOYMENT_TEMPLATE =
@@ -60,6 +62,10 @@ public class DBDeployDAOImpl implements DeployDAO {
 
     private static final String GET_RUNNING_DEPLOYS_TEMPLATE =
             "SELECT * FROM deploys WHERE env_id='%s' AND deploy_type IN (%s) " +
+                    "AND state IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
+
+    private static final String GET_ALL_RUNNING_DEPLOYS_TEMPLATE =
+            "SELECT * FROM deploys WHERE deploy_type IN (%s) " +
                     "AND state IN ('SUCCEEDING', 'RUNNING') ORDER BY start_date DESC";
 
     private static final String GET_ACCEPTED_DEPLOYS_DELAYED_TEMPLATE =
@@ -183,11 +189,25 @@ public class DBDeployDAOImpl implements DeployDAO {
         ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
         String
                 typesClause =
-                QueryUtils.genEnumGroupClause(StateMachines.AUTO_PROMOTABLE_DEPLOY_TYPE);
+                QueryUtils.genEnumGroupClause(StateMachines.RUNNING_DEPLOY_TYPE);
+
+//        LOG.debug("minglog: getRunningDeploys: query: " + String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause));
+
         return new QueryRunner(dataSource).query(
                 String.format(GET_RUNNING_DEPLOYS_TEMPLATE, envId, typesClause), h);
     }
 
+    @Override
+    public List<DeployBean> getAllRunningDeploys()
+            throws Exception {
+        ResultSetHandler<List<DeployBean>> h = new BeanListHandler<>(DeployBean.class);
+        String
+                typesClause =
+                QueryUtils.genEnumGroupClause(StateMachines.RUNNING_DEPLOY_TYPE);
+
+        return new QueryRunner(dataSource).query(
+                String.format(GET_ALL_RUNNING_DEPLOYS_TEMPLATE, typesClause), h);
+    }
 
 
     @Override
