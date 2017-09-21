@@ -28,8 +28,6 @@ import com.google.common.cache.LoadingCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +55,7 @@ public class PingHandler {
     private AgentErrorDAO agentErrorDAO;
     private DeployDAO deployDAO;
     private BuildDAO buildDAO;
-    private PackageDAO packageDAO;
+    private Pg2PackagesDAO pg2PackagesDAO;
     private EnvironDAO environDAO;
     private HostDAO hostDAO;
     private UtilDAO utilDAO;
@@ -71,7 +69,7 @@ public class PingHandler {
         agentErrorDAO = serviceContext.getAgentErrorDAO();
         deployDAO = serviceContext.getDeployDAO();
         buildDAO = serviceContext.getBuildDAO();
-        packageDAO = serviceContext.getPackageDAO();
+        pg2PackagesDAO = serviceContext.getPg2PackagesDAO();
         environDAO = serviceContext.getEnvironDAO();
         hostDAO = serviceContext.getHostDAO();
         utilDAO = serviceContext.getUtilDAO();
@@ -558,7 +556,7 @@ public class PingHandler {
                 : getFromCache(buildCache, deployBean.getBuild_id());
         LOG.debug("minglog: deployId: {}", deployBean.getDeploy_id());
         LOG.debug("minglog: buildId: {}", buildBean.getBuild_id());
-        List<PackageBean> packageBeans = packageDAO.getByGroupId(buildBean.getBuild_id());
+        List<PackageBean> packageBeans = pg2PackagesDAO.getByGroupId(buildBean.getBuild_id());
         List<String> packages = new ArrayList<>();
         for (PackageBean packageBean : packageBeans) {
 //            String packageName = String.format(

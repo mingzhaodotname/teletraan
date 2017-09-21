@@ -21,7 +21,7 @@ import com.pinterest.deployservice.buildtags.BuildTagsManager;
 import com.pinterest.deployservice.buildtags.BuildTagsManagerImpl;
 import com.pinterest.deployservice.common.CommonUtils;
 import com.pinterest.deployservice.dao.BuildDAO;
-import com.pinterest.deployservice.dao.PackageDAO;
+import com.pinterest.deployservice.dao.Pg2PackagesDAO;
 import com.pinterest.deployservice.dao.TagDAO;
 import com.pinterest.deployservice.scm.SourceControlManager;
 import com.pinterest.teletraan.TeletraanServiceContext;
@@ -52,7 +52,7 @@ public class Builds {
     private final static int DEFAULT_SIZE = 100;
     private BuildDAO buildDAO;
     private TagDAO tagDAO;
-    private PackageDAO packageDAO;
+    private Pg2PackagesDAO pg2PackagesDAO;
     private SourceControlManager sourceControlManager;
     private final Authorizer authorizer;
 
@@ -62,7 +62,7 @@ public class Builds {
     public Builds(TeletraanServiceContext context) throws Exception {
         buildDAO = context.getBuildDAO();
         tagDAO = context.getTagDAO();
-        packageDAO = context.getPackageDAO();
+        pg2PackagesDAO = context.getPg2PackagesDAO();
         sourceControlManager = context.getSourceControlManager();
         authorizer = context.getAuthorizer();
     }
@@ -246,7 +246,7 @@ public class Builds {
                 if (StringUtils.isEmpty(packageBean.getBuild_id())) {
                     packageBean.setBuild_id(buildId);
                 }
-                packageDAO.insert(packageBean);
+                pg2PackagesDAO.insert(packageBean);
                 LOG.info("Successfully published package {}", packageBean.getPackage_name());
                 // TODO: use transaction to write to data, ideally together with build.
             }
@@ -255,7 +255,7 @@ public class Builds {
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();
         URI buildUri = ub.path(buildId).build();
         buildBean = buildDAO.getById(buildId);
-        List<PackageBean> newPackageBeans = packageDAO.getByGroupId(buildId);
+        List<PackageBean> newPackageBeans = pg2PackagesDAO.getByGroupId(buildId);
         buildBean.setPackages(newPackageBeans);
 
         return Response.created(buildUri).entity(buildBean).build();

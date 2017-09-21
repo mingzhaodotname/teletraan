@@ -20,7 +20,6 @@ import com.pinterest.deployservice.db.*;
 import com.pinterest.deployservice.events.DefaultEventSender;
 import com.pinterest.deployservice.rodimus.DefaultRodimusManager;
 import com.pinterest.deployservice.rodimus.RodimusManagerImpl;
-import com.pinterest.teletraan.config.AutoScalingFactory;
 import com.pinterest.teletraan.config.EventSenderFactory;
 import com.pinterest.teletraan.config.RodimusFactory;
 import com.pinterest.teletraan.config.JenkinsFactory;
@@ -62,7 +61,7 @@ public class ConfigHelper {
         context.setTokenRolesDAO(new DBTokenRolesDAOImpl(dataSource));
 
         context.setBuildDAO(new DBBuildDAOImpl(dataSource));
-        context.setPackageDAO(new DBPackageDAOImpl(dataSource));
+        context.setPg2PackagesDAO(new DBPg2PackagesDAOImpl(dataSource));
         context.setEnvironDAO(new DBEnvironDAOImpl(dataSource));
         context.setDeployDAO(new DBDeployDAOImpl(dataSource));
         context.setHotfixDAO(new DBHotfixDAOImpl(dataSource));
