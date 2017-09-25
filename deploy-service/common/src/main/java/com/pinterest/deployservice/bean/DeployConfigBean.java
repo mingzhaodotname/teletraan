@@ -26,8 +26,12 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * config_name  VARCHAR(64)         NOT NULL,
  * config_type  VARCHAR(64)         NOT NULL,
  * config_value  VARCHAR(1024)         NOT NULL,
+ * create_date     BIGINT              NOT NULL,
+ * create_user  VARCHAR(64)         NOT NULL,
+ * update_date     BIGINT              NOT NULL,
+ * update_user  VARCHAR(64)         NOT NULL,
  * PRIMARY KEY (deploy_id, config_name)
- * )
+ * );
  *
  */
 
@@ -46,6 +50,9 @@ public class DeployConfigBean implements Updatable {
 
     @JsonProperty("createDate")
     private Long create_date;
+
+    @JsonProperty("createUser")
+    private Long create_user;
 
     @JsonProperty("updateDate")
     private Long update_date;
@@ -70,6 +77,7 @@ public class DeployConfigBean implements Updatable {
         clause.addColumn("config_type", config_type);
         clause.addColumn("config_value", config_value);
         clause.addColumn("create_date", create_date);
+        clause.addColumn("create_user", create_user);
         clause.addColumn("update_date", update_date);
         clause.addColumn("update_user", update_user);
         return clause;

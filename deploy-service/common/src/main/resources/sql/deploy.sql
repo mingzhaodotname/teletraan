@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS deploy_configs (
     config_type  VARCHAR(64)         NOT NULL,
     config_value  VARCHAR(1024)         NOT NULL,
     create_date     BIGINT              NOT NULL,
+    create_user  VARCHAR(64)         NOT NULL,
     update_date     BIGINT              NOT NULL,
     update_user  VARCHAR(64)         NOT NULL,
     PRIMARY KEY (deploy_id, config_name)
