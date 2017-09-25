@@ -92,6 +92,24 @@ CREATE TABLE IF NOT EXISTS deploys (
 CREATE INDEX deploy_env_idx ON deploys (env_id);
 CREATE INDEX deploy_build_idx ON deploys (build_id);
 
+/* Deploy configurations */
+CREATE TABLE IF NOT EXISTS deploy_configs (
+    deploy_id   VARCHAR(22)         NOT NULL,
+    config_name  VARCHAR(64)         NOT NULL,
+    config_type  VARCHAR(64)         NOT NULL,
+    config_value  VARCHAR(1024)         NOT NULL,
+    PRIMARY KEY (deploy_id, config_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE UNIQUE INDEX deploy_config_idx ON deploy_configs (deploy_id, config_name);
+
+/* Associate groups to deploys - maybe combined into deploy_configs */
+CREATE TABLE IF NOT EXISTS deploys_and_groups (
+    deploy_id   VARCHAR(22)         NOT NULL,
+    group_name  VARCHAR(64)         NOT NULL,
+    PRIMARY KEY (deploy_id, group_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE UNIQUE INDEX deploy_group_idx ON deploys_and_groups (deploy_id, group_name);
+
 CREATE TABLE IF NOT EXISTS hotfixes (
     id              VARCHAR(22)     NOT NULL,
     env_name        VARCHAR(64)     NOT NULL,
