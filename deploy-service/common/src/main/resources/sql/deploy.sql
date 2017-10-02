@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS pg_and_packages (
     publisher          VARCHAR(64),
     PRIMARY KEY    (group_id, package_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE INDEX group_id_package_idx ON packages (group_id, package_id);
+CREATE INDEX group_id_package_idx ON pg_and_packages (group_id, package_id);
 
 CREATE TABLE IF NOT EXISTS global_envs (
     env_name      VARCHAR(64)         NOT NULL,

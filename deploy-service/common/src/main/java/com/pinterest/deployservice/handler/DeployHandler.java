@@ -18,7 +18,6 @@ package com.pinterest.deployservice.handler;
 import com.google.common.base.Joiner;
 
 import com.pinterest.deployservice.ServiceContext;
-import com.pinterest.deployservice.bean.AcceptanceStatus;
 import com.pinterest.deployservice.bean.BuildBean;
 import com.pinterest.deployservice.bean.CommitBean;
 import com.pinterest.deployservice.bean.DeployBean;
@@ -33,6 +32,7 @@ import com.pinterest.deployservice.bean.PromoteBean;
 import com.pinterest.deployservice.bean.ScheduleBean;
 import com.pinterest.deployservice.bean.PromoteDisablePolicy;
 import com.pinterest.deployservice.bean.PromoteType;
+import com.pinterest.deployservice.bean.ScheduleState;
 import com.pinterest.deployservice.bean.UpdateStatement;
 import com.pinterest.deployservice.common.CommonUtils;
 import com.pinterest.deployservice.common.Constants;
