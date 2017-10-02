@@ -36,7 +36,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  */
 
 public class DeployConfigBean implements Updatable {
-    @JsonProperty("id")
+    @JsonProperty("deployId")
     private String deploy_id;
 
     @JsonProperty("configName")
@@ -46,19 +46,19 @@ public class DeployConfigBean implements Updatable {
     private String config_type;
 
     @JsonProperty("configValue")
-    private DeployType config_value;
+    private String config_value;
 
     @JsonProperty("createDate")
     private Long create_date;
 
     @JsonProperty("createUser")
-    private Long create_user;
+    private String create_user;
 
     @JsonProperty("updateDate")
     private Long update_date;
 
     @JsonProperty("updateUser")
-    private Long update_user;
+    private String update_user;
 
     public String getDeploy_id() {
         return deploy_id;
@@ -68,6 +68,62 @@ public class DeployConfigBean implements Updatable {
         this.deploy_id = deploy_id;
     }
 
+    public String getConfig_name() {
+        return config_name;
+    }
+
+    public void setConfig_name(String config_name) {
+        this.config_name = config_name;
+    }
+
+    public String getConfig_type() {
+        return config_type;
+    }
+
+    public void setConfig_type(String config_type) {
+        this.config_type = config_type;
+    }
+
+    public String getConfig_value() {
+        return config_value;
+    }
+
+    public void setConfig_value(String config_value) {
+        this.config_value = config_value;
+    }
+
+
+    public Long getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Long create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getCreate_user() {
+        return create_user;
+    }
+
+    public void setCreate_user(String create_user) {
+        this.create_user = create_user;
+    }
+
+    public Long getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(Long update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getUpdate_user() {
+        return update_user;
+    }
+
+    public void setUpdate_user(String update_user) {
+        this.update_user = update_user;
+    }
 
     @Override
     public SetClause genSetClause() {
