@@ -98,10 +98,10 @@ CREATE TABLE IF NOT EXISTS deploy_configs (
     config_name  VARCHAR(64)         NOT NULL,
     config_type  VARCHAR(64)         NOT NULL,
     config_value  VARCHAR(1024)         NOT NULL,
-    create_date     BIGINT              NOT NULL,
-    create_user  VARCHAR(64)         NOT NULL,
-    update_date     BIGINT              NOT NULL,
-    update_user  VARCHAR(64)         NOT NULL,
+    create_date     BIGINT,
+    create_user  VARCHAR(64),
+    update_date     BIGINT,
+    update_user  VARCHAR(64),
     PRIMARY KEY (deploy_id, config_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE UNIQUE INDEX deploy_config_idx ON deploy_configs (deploy_id, config_name);
