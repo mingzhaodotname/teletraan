@@ -22,6 +22,7 @@ import com.pinterest.deployservice.bean.AcceptanceStatus;
 import com.pinterest.deployservice.bean.BuildBean;
 import com.pinterest.deployservice.bean.CommitBean;
 import com.pinterest.deployservice.bean.DeployBean;
+import com.pinterest.deployservice.bean.DeployConfigBean;
 import com.pinterest.deployservice.bean.DeployFilterBean;
 import com.pinterest.deployservice.bean.DeployQueryResultBean;
 import com.pinterest.deployservice.bean.DeployState;
@@ -37,10 +38,10 @@ import com.pinterest.deployservice.common.CommonUtils;
 import com.pinterest.deployservice.common.Constants;
 import com.pinterest.deployservice.common.DeployInternalException;
 import com.pinterest.deployservice.common.HTTPClient;
-import com.pinterest.deployservice.common.StateMachines;
 import com.pinterest.deployservice.common.WebhookDataFactory;
 import com.pinterest.deployservice.dao.AgentDAO;
 import com.pinterest.deployservice.dao.BuildDAO;
+import com.pinterest.deployservice.dao.DeployConfigDAO;
 import com.pinterest.deployservice.dao.DeployDAO;
 import com.pinterest.deployservice.dao.EnvironDAO;
 import com.pinterest.deployservice.dao.PromoteDAO;
@@ -48,7 +49,6 @@ import com.pinterest.deployservice.dao.ScheduleDAO;
 import com.pinterest.deployservice.db.DatabaseUtil;
 import com.pinterest.deployservice.db.DeployQueryFilter;
 import com.pinterest.deployservice.scm.SourceControlManager;
-import com.pinterest.deployservice.bean.ScheduleState;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -73,6 +73,7 @@ public class DeployHandler {
     private static final String COMPARE_DEPLOY_URL = "https://deploy.pinadmin.com/env/%s/%s/compare_deploys_2/?chkbox_1=%s&chkbox_2=%s";
 
     private DeployDAO deployDAO;
+    private DeployConfigDAO deployConfigDAO;
     private EnvironDAO environDAO;
     private BuildDAO buildDAO;
     private PromoteDAO promoteDAO;
@@ -169,6 +170,7 @@ public class DeployHandler {
 
     public DeployHandler(ServiceContext serviceContext) {
         deployDAO = serviceContext.getDeployDAO();
+        deployConfigDAO = serviceContext.getDeployConfigDAO();
         environDAO = serviceContext.getEnvironDAO();
         buildDAO = serviceContext.getBuildDAO();
         promoteDAO = serviceContext.getPromoteDAO();
@@ -252,9 +254,17 @@ public class DeployHandler {
         deployBean.setFail_total(0);
         deployBean.setTotal((int) total);
 
+        DeployConfigBean deployConfigBean = new DeployConfigBean();
+        deployConfigBean.setDeploy_id(deployId);
+        deployConfigBean.setConfig_name("test config name");
+        deployConfigBean.setConfig_type("test config type");
+        deployConfigBean.setConfig_value("test config value");
+
         // Do a transactional update for everything need to
         List<UpdateStatement> statements = new ArrayList<>();
         statements.add(deployDAO.genInsertStatement(deployBean));
+
+        statements.add(deployConfigDAO.genInsertStatement(deployConfigBean));
 
         EnvironBean updateEnvBean = new EnvironBean();
         updateEnvBean.setDeploy_id(deployId);

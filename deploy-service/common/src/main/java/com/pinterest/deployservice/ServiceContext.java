@@ -35,6 +35,7 @@ public class ServiceContext {
     private AgentDAO agentDAO;
     private AgentErrorDAO agentErrorDAO;
     private DeployDAO deployDAO;
+    private DeployConfigDAO deployConfigDAO;
     private EnvironDAO environDAO;
     private HostDAO hostDAO;
     private HotfixDAO hotfixDAO;
@@ -115,6 +116,15 @@ public class ServiceContext {
     public void setDeployDAO(DeployDAO deployDAO) {
         this.deployDAO = deployDAO;
     }
+
+    public DeployConfigDAO getDeployConfigDAO() {
+        return deployConfigDAO;
+    }
+
+    public void setDeployConfigDAO(DeployConfigDAO deployConfigDAO) {
+        this.deployConfigDAO = deployConfigDAO;
+    }
+
 
     public EnvironDAO getEnvironDAO() {
         return environDAO;

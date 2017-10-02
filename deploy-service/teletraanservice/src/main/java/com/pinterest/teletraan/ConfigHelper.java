@@ -64,6 +64,7 @@ public class ConfigHelper {
         context.setPg2PackagesDAO(new DBPg2PackagesDAOImpl(dataSource));
         context.setEnvironDAO(new DBEnvironDAOImpl(dataSource));
         context.setDeployDAO(new DBDeployDAOImpl(dataSource));
+        context.setDeployConfigDAO(new DBDeployConfigDAOImpl(dataSource));
         context.setHotfixDAO(new DBHotfixDAOImpl(dataSource));
         context.setRatingDAO(new DBRatingsDAOImpl(dataSource));
         context.setPromoteDAO(new DBPromoteDAOImpl(dataSource));

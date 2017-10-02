@@ -29,12 +29,13 @@ import java.util.List;
  */
 public interface DeployConfigDAO {
     void insert(DeployConfigBean deployConfigBean) throws Exception;
+    // For transactions with other operations.
+    UpdateStatement genInsertStatement(DeployConfigBean deployConfigBean);
 
     DeployConfigBean getById(String deployId) throws Exception;
 
     void update(String deployId, DeployConfigBean deployConfigBean) throws Exception;
 //    UpdateStatement genUpdateStatement(String deployId, DeployConfigBean deployConfigBean);
-//    UpdateStatement genInsertStatement(DeployConfigBean deployConfigBean);
 
     void delete(String deployId) throws Exception;
 
