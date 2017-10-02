@@ -31,6 +31,7 @@ import com.pinterest.deployservice.bean.BuildBean;
 import com.pinterest.deployservice.bean.ConfigHistoryBean;
 import com.pinterest.deployservice.bean.DataBean;
 import com.pinterest.deployservice.bean.DeployBean;
+import com.pinterest.deployservice.bean.DeployConfigBean;
 import com.pinterest.deployservice.bean.DeployFilterBean;
 import com.pinterest.deployservice.bean.DeployPriority;
 import com.pinterest.deployservice.bean.DeployQueryResultBean;
@@ -55,6 +56,7 @@ import com.pinterest.deployservice.bean.TagBean;
 import com.pinterest.deployservice.bean.TagTargetType;
 import com.pinterest.deployservice.bean.TagValue;
 import com.pinterest.deployservice.bean.TokenRolesBean;
+import com.pinterest.deployservice.bean.UpdateStatement;
 import com.pinterest.deployservice.bean.UserRolesBean;
 import com.pinterest.deployservice.common.CommonUtils;
 import com.pinterest.deployservice.common.Constants;
@@ -63,6 +65,7 @@ import com.pinterest.deployservice.dao.AgentErrorDAO;
 import com.pinterest.deployservice.dao.BuildDAO;
 import com.pinterest.deployservice.dao.ConfigHistoryDAO;
 import com.pinterest.deployservice.dao.DataDAO;
+import com.pinterest.deployservice.dao.DeployConfigDAO;
 import com.pinterest.deployservice.dao.DeployDAO;
 import com.pinterest.deployservice.dao.EnvironDAO;
 import com.pinterest.deployservice.dao.GroupDAO;
@@ -108,6 +111,7 @@ public class DBDAOTest {
     private static AgentErrorDAO agentErrorDAO;
     private static DataDAO dataDAO;
     private static DeployDAO deployDAO;
+    private static DeployConfigDAO deployConfigDAO;
     private static EnvironDAO environDAO;
     private static PromoteDAO promoteDAO;
     private static HostDAO hostDAO;
@@ -141,6 +145,7 @@ public class DBDAOTest {
         agentErrorDAO = new DBAgentErrorDAOImpl(DATASOURCE);
         dataDAO = new DBDataDAOImpl(DATASOURCE);
         deployDAO = new DBDeployDAOImpl(DATASOURCE);
+        deployConfigDAO = new DBDeployConfigDAOImpl(DATASOURCE);
         environDAO = new DBEnvironDAOImpl(DATASOURCE);
         promoteDAO = new DBPromoteDAOImpl(DATASOURCE);
         hostDAO = new DBHostDAOImpl(DATASOURCE);
@@ -319,6 +324,20 @@ public class DBDAOTest {
         deployDAO.delete("d-4");
         deployDAO.delete("d-5");
         assertEquals(deployDAO.getById("d-1"), null);
+    }
+
+    @Test
+    public void testDeployConfigDAO() throws Exception {
+        DeployConfigBean deployConfigBean = new DeployConfigBean();
+        deployConfigBean.setDeploy_id("test deploy id");
+        deployConfigBean.setConfig_name("test config name");
+        deployConfigBean.setConfig_type("test config type");
+        deployConfigBean.setConfig_value("test config value");
+
+        String statement = deployConfigDAO.genInsertStatement(deployConfigBean).getStatement();
+        assertEquals("INSERT INTO deploy_configs SET " +
+                        "deploy_id=?,config_name=?,config_type=?,config_value=?",
+                statement);
     }
 
     @Test

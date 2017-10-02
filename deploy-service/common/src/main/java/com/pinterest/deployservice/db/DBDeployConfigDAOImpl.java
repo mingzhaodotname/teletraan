@@ -34,25 +34,24 @@ import java.util.List;
 
 public class DBDeployConfigDAOImpl implements DeployConfigDAO {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(DBDeployDAOImpl.class);
 
     private static final String TABLE_NAME = "deploy_configs";
 
     private static final String INSERT_DEPLOYMENT_TEMPLATE =
         "INSERT INTO " + TABLE_NAME + " SET %s";
-//        "INSERT INTO %s".format(TABLE_NAME) + " SET %s";
 
     private static final String GET_DEPLOYMENT_BY_ID =
-            "SELECT * FROM %s WHERE deploy_id=?".format(TABLE_NAME);
+            "SELECT * FROM " + TABLE_NAME + " WHERE deploy_id=?";
 
     private static final String UPDATE_DEPLOYMENT_TEMPLATE =
-        "UPDATE %s".format(TABLE_NAME) + " SET %s WHERE deploy_id=?";
+        "UPDATE " + TABLE_NAME + " SET %s WHERE deploy_id=?";
 
 //    private static final String UPDATE_DEPLOY_SAFELY_TEMPLATE =
 //        "UPDATE deploys SET %s WHERE deploy_id=? AND state=?";
 
     private static final String DELETE_DEPLOYMENT =
-        "DELETE FROM %s WHERE deploy_id=?".format(TABLE_NAME);
+        "DELETE FROM " + TABLE_NAME + " WHERE deploy_id=?";
 
     private BasicDataSource dataSource;
 
@@ -71,7 +70,6 @@ public class DBDeployConfigDAOImpl implements DeployConfigDAO {
     public UpdateStatement genInsertStatement(DeployConfigBean deployConfigBean) {
         SetClause setClause = deployConfigBean.genSetClause();
         String clause = String.format(INSERT_DEPLOYMENT_TEMPLATE, setClause.getClause());
-        LOG.info("===minglog: " + clause);
         return new UpdateStatement(clause, setClause.getValueArray());
     }
 
