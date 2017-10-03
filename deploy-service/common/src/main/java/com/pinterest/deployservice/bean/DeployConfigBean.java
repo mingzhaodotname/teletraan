@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * Keep the bean and table in sync
  * <p/>
  * CREATE TABLE IF NOT EXISTS deploy_configs (
- * deploy_id   VARCHAR(22)         NOT NULL,
+ * config_id   VARCHAR(22)         NOT NULL,
  * config_name  VARCHAR(64)         NOT NULL,
  * config_type  VARCHAR(64)         NOT NULL,
  * config_value  VARCHAR(1024)         NOT NULL,
@@ -30,14 +30,14 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * create_user  VARCHAR(64)         NOT NULL,
  * update_date     BIGINT              NOT NULL,
  * update_user  VARCHAR(64)         NOT NULL,
- * PRIMARY KEY (deploy_id, config_name)
+ * PRIMARY KEY (config_id, config_name)
  * );
  *
  */
 
 public class DeployConfigBean implements Updatable {
-    @JsonProperty("deployId")
-    private String deploy_id;
+    @JsonProperty("configId")
+    private String config_id;
 
     @JsonProperty("configName")
     private String config_name;
@@ -60,12 +60,12 @@ public class DeployConfigBean implements Updatable {
     @JsonProperty("updateUser")
     private String update_user;
 
-    public String getDeploy_id() {
-        return deploy_id;
+    public String getConfig_id() {
+        return config_id;
     }
 
-    public void setDeploy_id(String deploy_id) {
-        this.deploy_id = deploy_id;
+    public void setConfig_id(String config_id) {
+        this.config_id = config_id;
     }
 
     public String getConfig_name() {
@@ -128,7 +128,7 @@ public class DeployConfigBean implements Updatable {
     @Override
     public SetClause genSetClause() {
         SetClause clause = new SetClause();
-        clause.addColumn("deploy_id", deploy_id);
+        clause.addColumn("config_id", config_id);
         clause.addColumn("config_name", config_name);
         clause.addColumn("config_type", config_type);
         clause.addColumn("config_value", config_value);

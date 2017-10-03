@@ -94,7 +94,7 @@ CREATE INDEX deploy_build_idx ON deploys (build_id);
 
 /* Deploy configurations */
 CREATE TABLE IF NOT EXISTS deploy_configs (
-    deploy_id   VARCHAR(22)         NOT NULL,
+    config_id   VARCHAR(22)         NOT NULL,
     config_name  VARCHAR(64)         NOT NULL,
     config_type  VARCHAR(64)         NOT NULL,
     config_value  VARCHAR(1024)         NOT NULL,
@@ -102,9 +102,9 @@ CREATE TABLE IF NOT EXISTS deploy_configs (
     create_user  VARCHAR(64),
     update_date     BIGINT,
     update_user  VARCHAR(64),
-    PRIMARY KEY (deploy_id, config_name)
+    PRIMARY KEY (config_id, config_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE UNIQUE INDEX deploy_config_idx ON deploy_configs (deploy_id, config_name);
+
 
 /* Associate groups to deploys - maybe combined into deploy_configs */
 CREATE TABLE IF NOT EXISTS deploys_and_groups (

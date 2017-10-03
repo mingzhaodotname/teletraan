@@ -255,7 +255,7 @@ public class DeployHandler {
         deployBean.setTotal((int) total);
 
         DeployConfigBean deployConfigBean = new DeployConfigBean();
-        deployConfigBean.setDeploy_id(deployId);
+        deployConfigBean.setConfig_id(deployId);
         deployConfigBean.setConfig_name("test config name");
         deployConfigBean.setConfig_type("test config type");
         deployConfigBean.setConfig_value("test config value");
