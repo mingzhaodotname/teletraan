@@ -241,8 +241,16 @@ public class DeployHandler {
 
     String internalDeploy(EnvironBean envBean, DeployBean deployBean) throws Exception {
         // TODO deploy becomes longer process, consider to have worker to do this step
+        String configId = CommonUtils.getBase64UUID();
+        DeployConfigBean deployConfigBean = new DeployConfigBean();
+        deployConfigBean.setConfig_id(configId);
+        deployConfigBean.setConfig_name("test config name");
+        deployConfigBean.setConfig_type("test config type");
+        deployConfigBean.setConfig_value("test config value");
+
         String deployId = CommonUtils.getBase64UUID();
         deployBean.setDeploy_id(deployId);
+        deployBean.setConfig_id(configId);
         deployBean.setAcc_status(Constants.DEFAULT_ACCEPTANCE_STATUS);
         long now = System.currentTimeMillis();
         deployBean.setLast_update(now);
@@ -254,22 +262,16 @@ public class DeployHandler {
         deployBean.setFail_total(0);
         deployBean.setTotal((int) total);
 
-        DeployConfigBean deployConfigBean = new DeployConfigBean();
-        deployConfigBean.setConfig_id(deployId);
-        deployConfigBean.setConfig_name("test config name");
-        deployConfigBean.setConfig_type("test config type");
-        deployConfigBean.setConfig_value("test config value");
 
         // Do a transactional update for everything need to
         List<UpdateStatement> statements = new ArrayList<>();
-        statements.add(deployDAO.genInsertStatement(deployBean));
-
         statements.add(deployConfigDAO.genInsertStatement(deployConfigBean));
+
+        statements.add(deployDAO.genInsertStatement(deployBean));
 
         EnvironBean updateEnvBean = new EnvironBean();
         updateEnvBean.setDeploy_id(deployId);
         updateEnvBean.setDeploy_type(deployBean.getDeploy_type());
-
         statements.add(environDAO.genUpdateStatement(envBean.getEnv_id(), updateEnvBean));
 
         // Deprecate/Obsolete the previous deploy
