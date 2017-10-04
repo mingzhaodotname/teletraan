@@ -199,10 +199,11 @@ public class EnvDeploys {
 
         List<DeployConfigBean> configs = new ArrayList<>();
         if (!StringUtils.isEmpty(priority)) {
+            LOG.info("==== minglog: got priority: " + priority);
             DeployConfigBean deployConfigBean = new DeployConfigBean();
             deployConfigBean.setConfig_name(DeployConfigName.PRIORITY.name());
             deployConfigBean.setConfig_type("STRING");
-            deployConfigBean.setConfig_value(priority);
+            deployConfigBean.setConfig_value(priority.toUpperCase());
             configs.add(deployConfigBean);
         }
 
