@@ -30,6 +30,7 @@ import com.pinterest.teletraan.security.Authorizer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,14 +183,44 @@ public class EnvDeploys {
             response = Response.class)
     public Response create(
             @Context SecurityContext sc,
-            @ApiParam(value = "Environment name", required = true)@PathParam("envName") String envName,
+            @ApiParam(value = "Environment name", required = true)
+            @PathParam("envName")
+                    String envName,
             @ApiParam(value = "Stage name", required = true)@PathParam("stageName") String stageName,
             @ApiParam(value = "Build id", required = true)@NotEmpty @QueryParam("buildId") String buildId,
-            @ApiParam(value = "Description", required = true)@QueryParam("description") String description) throws Exception {
+            @ApiParam(value = "Description", required = true)@QueryParam("description") String description,
+            @ApiParam(value = "Priority", required = false)@QueryParam("priority") String priority,
+            @ApiParam(value = "Max Failure Rate", required = false)@QueryParam("max-failure-rate") Integer maxFailureRate,
+            @ApiParam(value = "Max Concurrent Hosts", required = false)@QueryParam("max-concurrent-hosts") Integer maxConcurrentHosts,
+            @ApiParam(value = "Alarms to watch", required = false)@QueryParam("alarm") List<String> alarms) throws Exception {
         EnvironBean envBean = Utils.getEnvStage(environDAO, envName, stageName);
         authorizer.authorize(sc, new Resource(envBean.getEnv_name(), Resource.Type.ENV), Role.OPERATOR);
         String operator = sc.getUserPrincipal().getName();
-        String deployId = deployHandler.deploy(envBean, buildId, description, operator);
+
+        List<DeployConfigBean> configs = new ArrayList<>();
+        if (!StringUtils.isEmpty(priority)) {
+            DeployConfigBean deployConfigBean = new DeployConfigBean();
+            deployConfigBean.setConfig_name(DeployConfigName.PRIORITY.name());
+            deployConfigBean.setConfig_type("STRING");
+            deployConfigBean.setConfig_value(priority);
+            configs.add(deployConfigBean);
+        }
+
+        if (StringUtils.isEmpty(priority)) {
+            DeployConfigBean deployConfigBean = new DeployConfigBean();
+            deployConfigBean.setConfig_name(DeployConfigName.PRIORITY.name());
+            deployConfigBean.setConfig_type("STRING");
+            deployConfigBean.setConfig_value(DeployPriority.HIGHER.name());
+            configs.add(deployConfigBean);
+        }
+
+//        if (maxConcurrentHosts != null && maxConcurrentHosts > 0) {
+//            DeployConfigBean deployConfigBean = new DeployConfigBean();
+//            deployConfigBean.setConfig_name(DeployConfigName.MAX_CONCURRENT_HOSTS.name());
+//            configs.add(deployConfigBean);
+//        }
+
+        String deployId = deployHandler.deploy(envBean, buildId, description, operator, configs);
         LOG.info("Successfully create deploy {} for env {}/{} by {}.", deployId, envName, stageName, operator);
 
         UriBuilder ub = uriInfo.getAbsolutePathBuilder();

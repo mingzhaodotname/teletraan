@@ -22,6 +22,7 @@ import com.pinterest.deployservice.bean.BuildBean;
 import com.pinterest.deployservice.bean.CommitBean;
 import com.pinterest.deployservice.bean.DeployBean;
 import com.pinterest.deployservice.bean.DeployConfigBean;
+import com.pinterest.deployservice.bean.DeployConfigName;
 import com.pinterest.deployservice.bean.DeployFilterBean;
 import com.pinterest.deployservice.bean.DeployQueryResultBean;
 import com.pinterest.deployservice.bean.DeployState;
@@ -239,14 +240,28 @@ public class DeployHandler {
         }
     }
 
-    String internalDeploy(EnvironBean envBean, DeployBean deployBean) throws Exception {
+    String internalDeploy(EnvironBean envBean, DeployBean deployBean, List<DeployConfigBean> configs) throws Exception {
         // TODO deploy becomes longer process, consider to have worker to do this step
-        String configId = CommonUtils.getBase64UUID();
-        DeployConfigBean deployConfigBean = new DeployConfigBean();
-        deployConfigBean.setConfig_id(configId);
-        deployConfigBean.setConfig_name("test config name");
-        deployConfigBean.setConfig_type("test config type");
-        deployConfigBean.setConfig_value("test config value");
+
+//        DeployConfigBean deployConfigBean = new DeployConfigBean();
+//        deployConfigBean.setConfig_id(configId);
+//        deployConfigBean.setConfig_name("test config name");
+//        deployConfigBean.setConfig_type("test config type");
+//        deployConfigBean.setConfig_value("test config value");
+
+
+        // Do a transactional update for everything need to
+        List<UpdateStatement> statements = new ArrayList<>();
+
+        String configId = null;
+        if (configs != null) {
+            configId = CommonUtils.getBase64UUID();
+
+            for (DeployConfigBean deployConfigBean : configs) {
+                deployConfigBean.setConfig_id(configId);
+                statements.add(deployConfigDAO.genInsertStatement(deployConfigBean));
+            }
+        }
 
         String deployId = CommonUtils.getBase64UUID();
         deployBean.setDeploy_id(deployId);
@@ -261,12 +276,6 @@ public class DeployHandler {
         deployBean.setSuc_total(0);
         deployBean.setFail_total(0);
         deployBean.setTotal((int) total);
-
-
-        // Do a transactional update for everything need to
-        List<UpdateStatement> statements = new ArrayList<>();
-        statements.add(deployConfigDAO.genInsertStatement(deployConfigBean));
-
         statements.add(deployDAO.genInsertStatement(deployBean));
 
         EnvironBean updateEnvBean = new EnvironBean();
@@ -361,7 +370,8 @@ public class DeployHandler {
         }
     }
 
-    public String deploy(EnvironBean envBean, String buildId, String desc, String operator) throws Exception {
+    public String deploy(EnvironBean envBean, String buildId, String desc, String operator,
+                         List<DeployConfigBean> configs) throws Exception {
         DeployBean deployBean = new DeployBean();
         deployBean.setEnv_id(envBean.getEnv_id());
         deployBean.setBuild_id(buildId);
@@ -372,7 +382,7 @@ public class DeployHandler {
         disableAutoPromote(envBean, operator, false);
         resetSchedule(envBean);
 
-        return internalDeploy(envBean, deployBean);
+        return internalDeploy(envBean, deployBean, configs);
     }
 
     public void update(String deployId, DeployBean updateBean, String operator) throws Exception {
@@ -394,7 +404,7 @@ public class DeployHandler {
 
         disableAutoPromote(envBean, operator, false);
 
-        return internalDeploy(envBean, deployBean);
+        return internalDeploy(envBean, deployBean, null);
     }
 
     DeployBean getLastSucceededDeploy(EnvironBean envBean) throws Exception {
@@ -442,7 +452,7 @@ public class DeployHandler {
 
         disableAutoPromote(envBean, operator, false);
 
-        return internalDeploy(envBean, deployBean);
+        return internalDeploy(envBean, deployBean, null);
     }
 
     public String restart(EnvironBean envBean, String description, String operator) throws Exception {
@@ -456,7 +466,7 @@ public class DeployHandler {
 
         disableAutoPromote(envBean, operator, false);
         resetSchedule(envBean);
-        return internalDeploy(envBean, deployBean);
+        return internalDeploy(envBean, deployBean, null);
     }
 
     public void resetSchedule(EnvironBean envBean) throws Exception {

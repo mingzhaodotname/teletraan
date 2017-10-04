@@ -36,6 +36,12 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  */
 
 public class DeployConfigBean implements Updatable {
+
+    public static final String MAX_FAILURE_RATE = "MAX_FAILURE_RATE";
+    public static final String MAX_CONCURRENT_HOSTS = "MAX_CONCURRENT_HOSTS";
+    public static final String PROIORITY = "PROIORITY";
+    public static final String ALARMS = "ALARMS";
+
     @JsonProperty("configId")
     private String config_id;
 
