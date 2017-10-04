@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS deploys (
     deploy_type   VARCHAR(32)         NOT NULL,
     env_id        VARCHAR(22)         NOT NULL,
     build_id      VARCHAR(30)         NOT NULL,
+    config_id     VARCHAR(22),
     alias         VARCHAR(22),
     state         VARCHAR(32)         NOT NULL,
     start_date    BIGINT              NOT NULL,

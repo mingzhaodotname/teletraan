@@ -23,19 +23,20 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * <p/>
  * CREATE TABLE deploys (
  * deploy_id     VARCHAR(22)         NOT NULL,
- * alias         VARCHAR(22),
- * env_id        VARCHAR(22)         NOT NULL,
- * build_id      VARCHAR(22)         NOT NULL,
  * deploy_type   VARCHAR(32)         NOT NULL,
+ * env_id        VARCHAR(22)         NOT NULL,
+ * build_id      VARCHAR(30)         NOT NULL,
+ * config_id     VARCHAR(22),
+ * alias         VARCHAR(22),
  * state         VARCHAR(32)         NOT NULL,
  * start_date    BIGINT              NOT NULL,
- * operator      VARCHAR(32)         NOT NULL,
+ * operator      VARCHAR(64)         NOT NULL,
  * last_update   BIGINT              NOT NULL,
- * description   VARCHAR(512),
+ * description   VARCHAR(2048),
  * suc_total     INT                 NOT NULL DEFAULT 0,
- * suc_date      BIGINT,
  * fail_total    INT                 NOT NULL DEFAULT 0,
  * total         INT                 NOT NULL DEFAULT 0,
+ * suc_date      BIGINT,
  * acc_status    VARCHAR(32)         NOT NULL,
  * from_deploy   VARCHAR(22),
  * error_message   VARCHAR(2048),
@@ -53,6 +54,9 @@ public class DeployBean implements Updatable {
 
     @JsonProperty("buildId")
     private String build_id;
+
+    @JsonProperty("configId")
+    private String config_id;
 
     @JsonProperty("type")
     private DeployType deploy_type;
@@ -119,6 +123,14 @@ public class DeployBean implements Updatable {
 
     public void setBuild_id(String build_id) {
         this.build_id = build_id;
+    }
+
+    public String getConfig_id() {
+        return config_id;
+    }
+
+    public void setConfig_id(String config_id) {
+        this.config_id = config_id;
     }
 
     public Long getStart_date() {
@@ -233,6 +245,7 @@ public class DeployBean implements Updatable {
         clause.addColumn("alias", alias);
         clause.addColumn("env_id", env_id);
         clause.addColumn("build_id", build_id);
+        clause.addColumn("config_id", config_id);
         clause.addColumn("state", state);
         clause.addColumn("start_date", start_date);
         clause.addColumn("operator", operator);
