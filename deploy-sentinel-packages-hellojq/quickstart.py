@@ -92,13 +92,14 @@ def publish_local_build(build_path, build_name='deploy-sentinel', branch='master
 
     packages.append(package_hello)
     build['packages'] = packages;
-    print 'build:', build
+    # print 'build:', build
 
     r = requests.post(publish_build_url, json=build, headers=headers)
     if 200 <= r.status_code < 300:
-        print "Successfully published local deploy-sentinel build and host_info " \
-              "configuration file to local /tmp directory!"
-        print "Status code = %s, response = %s" % (str(r.status_code), str(r.text))
+        #print "Successfully published local deploy-sentinel build and host_info " \
+        #      "configuration file to local /tmp directory!"
+        #print "Status code = %s, response = %s" % (str(r.status_code), str(r.text))
+        print 'Successfully published hellojq.deb package'
     else:
         print "Error publishing local deploy-sentinel build. Status code = %s, response = %s" % (str(r.status_code),
                                                                                                  str(r.text))
