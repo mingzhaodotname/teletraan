@@ -1,0 +1,157 @@
+Starting Teletraan server...
+INFO  [2018-01-09 19:38:15,561] org.eclipse.jetty.util.log: Logging initialized @1775ms
+INFO  [2018-01-09 19:38:16,229] com.pinterest.teletraan.ConfigHelper: Scheduled StateTransitioner.
+INFO  [2018-01-09 19:38:16,453] org.reflections.Reflections: Reflections took 196 ms to scan 1 urls, producing 154 keys and 342 values 
+INFO  [2018-01-09 19:38:16,916] io.dropwizard.server.ServerFactory: Starting teletraan-service
+        ,----,
+      ,/   .`|
+    ,`   .'  :          ,--,                 ___
+  ;    ;     /        ,--.'|               ,--.'|_
+.'___,/    ,'         |  | :               |  | :,'   __  ,-.                              ,---,
+|    :     |          :  : '               :  : ' : ,' ,'/ /|                          ,-+-. /  |
+;    |.';  ;   ,---.  |  ' |      ,---.  .;__,'  /  '  | |' | ,--.--.      ,--.--.    ,--.'|'   |
+`----'  |  |  /     \ '  | |     /     \ |  |   |   |  |   ,'/       \    /       \  |   |  ,"' |
+    '   :  ; /    /  ||  | :    /    /  |:__,'| :   '  :  / .--.  .-. |  .--.  .-. | |   | /  | |
+    |   |  '.    ' / |'  : |__ .    ' / |  '  : |__ |  | '   \__\/: . .   \__\/: . . |   | |  | |
+    '   :  |'   ;   /||  | '.'|'   ;   /|  |  | '.'|;  : |   ," .--.; |   ," .--.; | |   | |  |/
+    ;   |.' '   |  / |;  :    ;'   |  / |  ;  :    ;|  , ;  /  /  ,.  |  /  /  ,.  | |   | |--'
+    '---'   |   :    ||  ,   / |   :    |  |  ,   /  ---'  ;  :   .'   \;  :   .'   \|   |/
+             \   \  /  ---`-'   \   \  /    ---`-'         |  ,     .-./|  ,     .-./'---'
+              `----'             `----'                     `--`---'     `--`---'
+
+INFO  [2018-01-09 19:38:17,021] org.eclipse.jetty.setuid.SetUIDListener: Opened application@4a183d02{HTTP/1.1}{0.0.0.0:8080}
+INFO  [2018-01-09 19:38:17,022] org.eclipse.jetty.setuid.SetUIDListener: Opened admin@5d05ef57{HTTP/1.1}{0.0.0.0:8081}
+INFO  [2018-01-09 19:38:17,028] org.eclipse.jetty.server.Server: jetty-9.2.9.v20150224
+INFO  [2018-01-09 19:38:18,908] io.dropwizard.jersey.DropwizardResourceConfig: The following paths were found for the configured resources:
+
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/capacity (com.pinterest.teletraan.resource.EnvCapacities)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/capacity (com.pinterest.teletraan.resource.EnvCapacities)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/capacity (com.pinterest.teletraan.resource.EnvCapacities)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/capacity (com.pinterest.teletraan.resource.EnvCapacities)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/alarms (com.pinterest.teletraan.resource.EnvAlarms)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/alarms (com.pinterest.teletraan.resource.EnvAlarms)
+    GET     /v1/commits (com.pinterest.teletraan.resource.Commits)
+    GET     /v1/commits/{repo : [a-zA-Z0-9\-_]+}/{sha : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Commits)
+    DELETE  /v1/tags/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Tags)
+    GET     /v1/tags/targets/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Tags)
+    GET     /v1/tags/targets/{id : [a-zA-Z0-9\-_]+}/latest (com.pinterest.teletraan.resource.Tags)
+    GET     /v1/tags/values/{value : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Tags)
+    GET     /v1/tags/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Tags)
+    POST    /v1/tags (com.pinterest.teletraan.resource.Tags)
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/token_roles/{scriptName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvTokenRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/token_roles (com.pinterest.teletraan.resource.EnvTokenRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/token_roles/{scriptName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvTokenRoles)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/token_roles (com.pinterest.teletraan.resource.EnvTokenRoles)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/token_roles/{scriptName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvTokenRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys/current (com.pinterest.teletraan.resource.EnvDeploys)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys/current/missing-hosts (com.pinterest.teletraan.resource.EnvDeploys)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys (com.pinterest.teletraan.resource.EnvDeploys)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys/current/actions (com.pinterest.teletraan.resource.EnvDeploys)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys/current/progress (com.pinterest.teletraan.resource.EnvDeploys)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/deploys/hostactions (com.pinterest.teletraan.resource.EnvDeploys)
+    GET     /v1/envs (com.pinterest.teletraan.resource.Environs)
+    GET     /v1/envs/ids (com.pinterest.teletraan.resource.Environs)
+    GET     /v1/envs/names (com.pinterest.teletraan.resource.Environs)
+    GET     /v1/envs/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Environs)
+    POST    /v1/envs (com.pinterest.teletraan.resource.Environs)
+    POST    /v1/envs/actions (com.pinterest.teletraan.resource.Environs)
+    DELETE  /v1/system/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.SystemGroupRoles)
+    GET     /v1/system/group_roles (com.pinterest.teletraan.resource.SystemGroupRoles)
+    GET     /v1/system/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.SystemGroupRoles)
+    POST    /v1/system/group_roles (com.pinterest.teletraan.resource.SystemGroupRoles)
+    PUT     /v1/system/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.SystemGroupRoles)
+    DELETE  /v1/hosts/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hosts)
+    GET     /v1/hosts/id/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hosts)
+    GET     /v1/hosts/{hostName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hosts)
+    POST    /v1/hosts (com.pinterest.teletraan.resource.Hosts)
+    PUT     /v1/hosts/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hosts)
+    GET     /v1/schedules/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/{scheduleId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Schedules)
+    PUT     /v1/schedules/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/override (com.pinterest.teletraan.resource.Schedules)
+    PUT     /v1/schedules/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/schedules (com.pinterest.teletraan.resource.Schedules)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/web_hooks (com.pinterest.teletraan.resource.EnvWebHooks)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/web_hooks (com.pinterest.teletraan.resource.EnvWebHooks)
+    GET     /v1/groups/{groupName: [a-zA-Z0-9\-_]+}/env (com.pinterest.teletraan.resource.Groups)
+    GET     /v1/groups/{groupName: [a-zA-Z0-9\-_]+}/hosts (com.pinterest.teletraan.resource.Groups)
+    GET     /v1/groups/{groupName: [a-zA-Z0-9\-_]+}/instances (com.pinterest.teletraan.resource.Groups)
+    DELETE  /v1/deploys/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Deploys)
+    GET     /v1/deploys (com.pinterest.teletraan.resource.Deploys)
+    GET     /v1/deploys/dailycount (com.pinterest.teletraan.resource.Deploys)
+    GET     /v1/deploys/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Deploys)
+    PUT     /v1/deploys/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Deploys)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/history (com.pinterest.teletraan.resource.EnvHistory)
+    GET     /v1/hotfixs (com.pinterest.teletraan.resource.Hotfixs)
+    GET     /v1/hotfixs/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hotfixs)
+    POST    /v1/hotfixs (com.pinterest.teletraan.resource.Hotfixs)
+    PUT     /v1/hotfixs/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Hotfixs)
+    GET     /v1/agents/env/{envId : [a-zA-Z0-9\-_]+}/total (com.pinterest.teletraan.resource.Agents)
+    GET     /v1/agents/hostcount (com.pinterest.teletraan.resource.Agents)
+    GET     /v1/agents/id/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Agents)
+    GET     /v1/agents/{hostName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Agents)
+    PUT     /v1/agents/id/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Agents)
+    POST    /v1/system/ping/alldeploycandidates (com.pinterest.teletraan.resource.DeployCandidates)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agent_configs (com.pinterest.teletraan.resource.EnvAgentConfigs)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agent_configs (com.pinterest.teletraan.resource.EnvAgentConfigs)
+    GET     /v1/system/get_host/{hostName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Systems)
+    GET     /v1/system/scm_link_template (com.pinterest.teletraan.resource.Systems)
+    GET     /v1/system/scm_url (com.pinterest.teletraan.resource.Systems)
+    POST    /v1/system/send_chat_message (com.pinterest.teletraan.resource.Systems)
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvGroupRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/group_roles (com.pinterest.teletraan.resource.EnvGroupRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvGroupRoles)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/group_roles (com.pinterest.teletraan.resource.EnvGroupRoles)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/group_roles/{groupName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvGroupRoles)
+    DELETE  /v1/ratings/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Ratings)
+    GET     /v1/ratings (com.pinterest.teletraan.resource.Ratings)
+    GET     /v1/ratings/{userName : [a-zA-Z0-9\-_.]+}/is_eligible (com.pinterest.teletraan.resource.Ratings)
+    POST    /v1/ratings (com.pinterest.teletraan.resource.Ratings)
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/user_roles/{userName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvUserRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/user_roles (com.pinterest.teletraan.resource.EnvUserRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/user_roles/{userName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvUserRoles)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/user_roles (com.pinterest.teletraan.resource.EnvUserRoles)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/user_roles/{userName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvUserRoles)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/script_configs (com.pinterest.teletraan.resource.EnvScriptConfigs)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/script_configs (com.pinterest.teletraan.resource.EnvScriptConfigs)
+    DELETE  /v1/builds/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/current (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/names (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/names/{name : [a-zA-Z0-9\-_]+}/branches (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/tags (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/{id : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/builds/{id : [a-zA-Z0-9\-_]+}/tags (com.pinterest.teletraan.resource.Builds)
+    POST    /v1/builds (com.pinterest.teletraan.resource.Builds)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/metrics (com.pinterest.teletraan.resource.EnvMetrics)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/metrics (com.pinterest.teletraan.resource.EnvMetrics)
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvStages)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvStages)
+    POST    /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/actions (com.pinterest.teletraan.resource.EnvStages)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvStages)
+    DELETE  /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/hosts (com.pinterest.teletraan.resource.EnvHosts)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/hosts (com.pinterest.teletraan.resource.EnvHosts)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/hosts/{hostName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvHosts)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/promotes (com.pinterest.teletraan.resource.EnvPromotes)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/promotes (com.pinterest.teletraan.resource.EnvPromotes)
+    POST    /v1/system/ping (com.pinterest.teletraan.resource.Pings)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agents (com.pinterest.teletraan.resource.EnvAgents)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agents/count (com.pinterest.teletraan.resource.EnvAgents)
+    GET     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agents/errors/{hostName : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvAgents)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agents/reset_failed_agents/{deployId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvAgents)
+    PUT     /v1/envs/{envName : [a-zA-Z0-9\-_]+}/{stageName : [a-zA-Z0-9\-_]+}/agents/{hostId : [a-zA-Z0-9\-_]+} (com.pinterest.teletraan.resource.EnvAgents)
+    GET     /swagger (io.swagger.jaxrs.listing.ApiListingResource)
+    GET     /swagger (io.swagger.jaxrs.listing.ApiListingResource)
+    GET     /swagger.{type:json|yaml} (io.swagger.jaxrs.listing.ApiListingResource)
+
+INFO  [2018-01-09 19:38:18,918] org.eclipse.jetty.server.handler.ContextHandler: Started i.d.j.MutableServletContextHandler@6535117e{/,null,AVAILABLE}
+INFO  [2018-01-09 19:38:18,945] io.dropwizard.setup.AdminEnvironment: tasks = 
+
+    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
+    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
+
+INFO  [2018-01-09 19:38:18,950] org.eclipse.jetty.server.handler.ContextHandler: Started i.d.j.MutableServletContextHandler@61bfc9bf{/,null,AVAILABLE}
+INFO  [2018-01-09 19:38:18,966] org.eclipse.jetty.server.ServerConnector: Started application@4a183d02{HTTP/1.1}{0.0.0.0:8080}
+INFO  [2018-01-09 19:38:18,967] org.eclipse.jetty.server.ServerConnector: Started admin@5d05ef57{HTTP/1.1}{0.0.0.0:8081}
+INFO  [2018-01-09 19:38:18,967] org.eclipse.jetty.server.Server: Started @5183ms
+INFO  [2018-01-09 19:38:21,825] org.eclipse.jetty.server.ServerConnector: Stopped application@4a183d02{HTTP/1.1}{0.0.0.0:8080}
+INFO  [2018-01-09 19:38:21,836] org.eclipse.jetty.server.ServerConnector: Stopped admin@5d05ef57{HTTP/1.1}{0.0.0.0:8081}
+INFO  [2018-01-09 19:38:21,838] org.eclipse.jetty.server.handler.ContextHandler: Stopped i.d.j.MutableServletContextHandler@61bfc9bf{/,null,UNAVAILABLE}
+INFO  [2018-01-09 19:38:21,857] org.eclipse.jetty.server.handler.ContextHandler: Stopped i.d.j.MutableServletContextHandler@6535117e{/,null,UNAVAILABLE}
